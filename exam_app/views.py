@@ -936,7 +936,7 @@ def resultsdetail(request,id):
 
         # Convert the transformed data dictionary into a list of values
         final_data = list(transformed_data.values())
-
+        print(final_data)
         connection_string = "DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net"
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
         container_name = str(id)
@@ -1113,7 +1113,7 @@ def create_or_get_blob_container(connection_string, container_name):
         print("Blob container already exists.")
     else:
         container_client = blob_service_client.create_container(container_name)
-        container_client.set_container_access_policy(public_access=PublicAccess.Container)
+        container_client = container_client.set_container_access_policy(public_access=PublicAccess.Container)
         print("Blob container created successfully.")
     
     return container_client
