@@ -154,10 +154,33 @@ def registration(request):
         print(facedata) 
         print(id_image_file)
         print(face_image_file)   
-       
+
+        current_date = datetime.date.today()
+
+        # Check the last entered ID in the database
+        cursor.execute("SELECT MAX(KeyID) FROM dbo.tb_Candidate")
+        last_id = cursor.fetchone()[0]
+        print(last_id)
+        
+
+        if last_id:
+            # Check if the last entered ID has the same date
+            cursor.execute("SELECT id_date FROM dbo.tb_Candidate WHERE KeyID=%s", [last_id])
+            last_date = cursor.fetchone()[0]
+
+            if last_date == str(current_date):
+                # Increment the ID by 1
+                new_id = str(int(last_id) + 1)
+            else:
+                # Change the date and start from 1
+                new_id = str(current_date).replace('-','')+'001'
+        else:
+            # No previous IDs in the database, start from 1
+            new_id = str(current_date).replace('-','')+'001'
+
         try:
             cursor = connection.cursor()
-            cursor.execute('exec insertregistrationdata %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s' ,[Applyingfor,firstname,lastname,gender,dob,MaritalStatus,phone,email,CAddress,PAddress,Institution10,CGPA10,YOP10,Institution12,CGPA12,YOP12,Branch12,Graduation,UGCollege,UGDiscipline,CGPAUG,YOPUG,PGraduation,PGDiscipline,PGCollege,CGPAPG,YOPPG,Source,Referredthrough,Applied,Adate,countrycode,Id_proof,ID_NO,iddata,facedata])
+            cursor.execute('exec insertregistrationdata %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s' ,[Applyingfor,firstname,lastname,gender,dob,MaritalStatus,phone,email,CAddress,PAddress,Institution10,CGPA10,YOP10,Institution12,CGPA12,YOP12,Branch12,Graduation,UGCollege,UGDiscipline,CGPAUG,YOPUG,PGraduation,PGDiscipline,PGCollege,CGPAPG,YOPPG,Source,Referredthrough,Applied,Adate,countrycode,Id_proof,ID_NO,iddata,facedata,new_id,current_date])
             return render(request, 'registration/login.html')
         finally:
             cursor.close()
@@ -977,6 +1000,7 @@ def exam_portal(request):
             user_id = request.GET.get('user')
             print('level:',level)
             print(jobPosition)
+            print(user_id)
 
             # Start a new thread to run the start_recording function in parallel
             # is_recording = True
@@ -1016,6 +1040,21 @@ def exam_portal(request):
     return redirect('login')
 
 
+from azure.storage.blob import BlobServiceClient
+
+def create_or_get_blob_container(connection_string, container_name):
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+    
+    # Check if the container already exists
+    if blob_service_client.get_container_client(container_name).exists():
+        container_client = blob_service_client.get_container_client(container_name)
+        print("Blob container already exists.")
+    else:
+        container_client = blob_service_client.create_container(container_name)
+        print("Blob container created successfully.")
+    
+    return container_client
+
 
 import base64
 import cv2
@@ -1024,22 +1063,28 @@ from azure.storage.blob import BlobServiceClient
 import datetime
 
 def detect_face(request):
+    
     if request.method == 'POST':
         data_url = request.POST.get('image')
+        user_id = request.POST.get('user') 
+        print(user_id)
         if data_url:
             # Decode the data URL and save the image to a file
             image_data = base64.b64decode(data_url.split(',')[1])
             image = np.frombuffer(image_data, dtype=np.uint8)
             image = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
+            # Provide your Azure Storage connection string and container name
+            connection_string = "DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net"
+            container_name = user_id
+
+            # Call the function to create or get the blob container
+            container_client = create_or_get_blob_container(connection_string, container_name)
+
             # Perform face detection on the image
             face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-
-            blob_service_client = BlobServiceClient.from_connection_string('DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net')
-            container_name = 'proxy-img'
-            container_client = blob_service_client.get_container_client(container_name)
 
             if len(faces) == 0:
                 # No face detected, store as "no_face_<timestamp>.jpg"
@@ -1063,6 +1108,10 @@ def detect_face(request):
             return JsonResponse({'status': 'success'})
 
     return JsonResponse({'status': 'error'})
+
+
+def camera_part(request):
+    return render(request, 'exam_portal/camera_part_2.html')
 
 
 
