@@ -894,6 +894,64 @@ def result(request):
         return render(request, 'dashboard/Result.html', {'user': user, 'search_filter': search_filter, 'job_name': job_name, 'start_date': start_date, 'end_date': end_date})
     return redirect('logout')
 
+def resultsdetail(request,id):
+    if request.session.get('user_authenticated'):
+        cursor = connection.cursor()
+        cursor.execute('EXEC getdetailresult %s',[id])
+        result_data = cursor.fetchall()
+        cursor.close()
+        # Create a dictionary to store the transformed data
+        transformed_data = {}
+
+        # Iterate over the existing data and organize it into the desired structure
+        for item in result_data:
+            subject = item[4]
+            question = item[0]
+            answer = item[1]
+            is_attended = item[2]
+            score = item[3]
+            
+            # Check if the subject already exists in the transformed data dictionary
+            if subject in transformed_data:
+                transformed_data[subject]['questions'].append({
+                    'question': question,
+                    'answer': answer,
+                    'is_attended': is_attended,
+                    'score': score
+                })
+            else:
+                transformed_data[subject] = {
+                    'subject': subject,
+                    'questions': [{
+                        'question': question,
+                        'answer': answer,
+                        'is_attended': is_attended,
+                        'score': score
+                    }]
+                }
+
+        # Convert the transformed data dictionary into a list of values
+        final_data = list(transformed_data.values())
+
+        connection_string = "DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net"
+        blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+        container_name = id
+        container_client = blob_service_client.get_container_client(container_name)
+
+        blob_urls = []
+        for blob in container_client.list_blobs():
+            blob_url = container_client.url + '/' + blob.name
+            blob_urls.append(blob_url)
+
+        context = {
+            'blob_urls': blob_urls,
+            'final_data':final_data
+        }
+        
+        return render(request,'dashboard/resultsdetail.html', context)
+    return redirect('logout')
+
+
 
 def exam_main_dashboard(request):
     if request.session.get('user_authenticated'):
@@ -1040,7 +1098,7 @@ def exam_portal(request):
     return redirect('login')
 
 
-from azure.storage.blob import BlobServiceClient
+from azure.storage.blob import BlobServiceClient, PublicAccess
 
 def create_or_get_blob_container(connection_string, container_name):
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
@@ -1051,6 +1109,7 @@ def create_or_get_blob_container(connection_string, container_name):
         print("Blob container already exists.")
     else:
         container_client = blob_service_client.create_container(container_name)
+        container_client.set_container_access_policy(public_access=PublicAccess.Container)
         print("Blob container created successfully.")
     
     return container_client
@@ -1111,7 +1170,22 @@ def detect_face(request):
 
 
 def camera_part(request):
-    return render(request, 'exam_portal/camera_part_2.html')
+
+    connection_string = "DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net"
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+    container_name = "20230710003"
+    container_client = blob_service_client.get_container_client(container_name)
+
+    blob_urls = []
+    for blob in container_client.list_blobs():
+        blob_url = container_client.url + '/' + blob.name
+        blob_urls.append(blob_url)
+
+    context = {
+        'blob_urls': blob_urls
+    }
+
+    return render(request, 'exam_portal/camera_part.html', context)
 
 
 
