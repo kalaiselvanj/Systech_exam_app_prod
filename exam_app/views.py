@@ -898,6 +898,7 @@ def result(request):
     return redirect('logout')
 
 def resultsdetail(request,id):
+    
     if request.session.get('user_authenticated'):
         cursor = connection.cursor()
         cursor.execute('EXEC getdetailresult %s',[id])
@@ -938,7 +939,7 @@ def resultsdetail(request,id):
 
         connection_string = "DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net"
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-        container_name = id
+        container_name = str(id)
         container_client = blob_service_client.get_container_client(container_name)
 
         blob_urls = []
