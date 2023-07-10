@@ -299,7 +299,7 @@ input[type="date"]:focus {
         <tr>
           {% for res in user %}
             <td></td>
-            <td><a href="{% url 'resultsdetail' id=res.2  %}">{{res.0}}</a></td>
+            <td><a href="{% url 'resultsdetail' id=res.2 level=res.3  %}">{{res.0}}</a></td>
             <td>{{res.2}}</td>
             <td>{{res.1}}</td>
             <td>{{res.3}}</td>
