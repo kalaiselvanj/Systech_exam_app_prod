@@ -1,69 +1,79 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Camera and Microphone Check</title>
-  </head>
-  <body>
-    <h1>Camera Check:</h1>
-    <video id="camera-preview" autoplay></video>
+<head>
+    <title>Face Detection</title>
+</head>
+<body>
+    {% csrf_token %}
+    <h1>Face Detection Web Application</h1>
+    <video id="video" autoplay></video>
+    <canvas id="canvas"></canvas>
 
-    <h1>Microphone Check:</h1>
-    <button id="start-microphone-check">Start Microphone Check</button>
-    <button id="stop-microphone-check">Stop Microphone Check</button>
-  </body>
-  <script>
-    let cameraStream;
-    let microphoneStream;
-    let microphoneRecorder;
-    
-    // Camera check
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        const videoElement = document.getElementById('camera-preview');
-        videoElement.srcObject = stream;
-        cameraStream = stream;
-        console.log('Camera check successful');
-      })
-      .catch((error) => {
-        console.error('Error accessing camera:', error);
-      });
-    
-    // Microphone check
-    const startMicrophoneCheckButton = document.getElementById('start-microphone-check');
-    const stopMicrophoneCheckButton = document.getElementById('stop-microphone-check');
-    
-    startMicrophoneCheckButton.addEventListener('click', startMicrophoneCheck);
-    stopMicrophoneCheckButton.addEventListener('click', stopMicrophoneCheck);
-    
-    function startMicrophoneCheck() {
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then((stream) => {
-          const audioContext = new AudioContext();
-          const source = audioContext.createMediaStreamSource(stream);
-          const analyser = audioContext.createAnalyser();
-          source.connect(analyser);
-          microphoneStream = stream;
-          microphoneRecorder = analyser;
-    
-          console.log('Microphone check successful');
-        })
-        .catch((error) => {
-          console.error('Error accessing microphone:', error);
-        });
-    }
-    
-    function stopMicrophoneCheck() {
-      if (microphoneStream) {
-        microphoneStream.getTracks().forEach((track) => track.stop());
-        microphoneStream = null;
-        microphoneRecorder = null;
-    
-        console.log('Microphone check stopped');
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+      // Get the CSRF token from the cookie
+function getCookie(name) {
+  var cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
       }
     }
-    
+  }
+  return cookieValue;
+}
 
-  </script>
+// Get video and canvas elements
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
+
+// Get user media stream
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then((stream) => {
+    video.srcObject = stream;
+    captureFrame();
+  })
+  .catch((error) => {
+    console.error('Error accessing camera:', error);
+  });
+
+// Capture frame and send it to the server
+function captureFrame() {
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const imageData = canvas.toDataURL('image/png');
+  sendData(imageData);
+  requestAnimationFrame(captureFrame);
+}
+
+// Send image data to the server
+function sendData(imageData) {
+  var dataURL = imageData;
+  $.ajax({
+    url: '{% url "detect_face" %}',
+    type: 'POST',
+    data: {
+        user:"{{user_id}}",
+        image: dataURL,
+        csrfmiddlewaretoken: getCookie('csrftoken')
+    },
+    success: function(response) {
+        console.log('Image sent successfully.');
+        
+    },
+    error: function(xhr, status, error) {
+        console.error('Error saving image: ' + error);
+    }
+});
+}
+
+    </script>
+    
+</body>
 </html>

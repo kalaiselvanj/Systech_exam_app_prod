@@ -1,57 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-    </style>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Blob Images</title>
 </head>
 <body>
-    <div class="model-body">
-        <h1>This is a fullscreen page</h1>
-
-        <button class="btn btn-primary" onclick="toggleFullscreen()">Toggle Fullscreen</button>
-    </div>
-
-    <script>
-        // JavaScript code to toggle fullscreen
-        function toggleFullscreen() {
-            if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
-                exitFullscreen();
-            } else {
-                enterFullscreen();
-            }
-        }
-
-        function enterFullscreen() {
-            const docElem = document.documentElement;
-            if (docElem.requestFullscreen) {
-                docElem.requestFullscreen();
-            } else if (docElem.mozRequestFullScreen) {
-                docElem.mozRequestFullScreen();
-            } else if (docElem.webkitRequestFullscreen) {
-                docElem.webkitRequestFullscreen();
-            } else if (docElem.msRequestFullscreen) {
-                docElem.msRequestFullscreen();
-            }
-        }
-
-        function exitFullscreen() {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            }
-        }
-    </script>
+    <h1>Blob Images</h1>
+    {% for blob_url in blob_urls %}
+        <img src="{{ blob_url }}" alt="Blob Image">
+    {% endfor %}
 </body>
 </html>

@@ -27,7 +27,7 @@ urlpatterns = [
     path('delete_ques/<int:id>', views.delete_ques, name='delete_ques'),
     path('activate_quest/<int:id>', views.activate_quest, name='activate_quest'),
     path('result/', views.result, name='result'),
-    path('resultsdetail/<int:id>',views.resultsdetail,name='resultsdetail'),
+    path('resultsdetail/<int:id>/<str:level>/',views.resultsdetail,name='resultsdetail'),
     path('registration/', views.registration, name='registration'),
     # re_path(r'^/(?P<stream_path>(.*?))/$',views.dynamic_stream,name="videostream"),  
     path('exam_portal',views.exam_portal,name="index"),
@@ -46,7 +46,6 @@ urlpatterns = [
     path('registercandidate/',views.registercandidate,name='registercandidate'),
     path('detect_face/', views.detect_face, name='detect_face'),
     path('video/', views.camera_part, name='video'),
-    path('test/',views.test,name="test"),
     
 ]
 
