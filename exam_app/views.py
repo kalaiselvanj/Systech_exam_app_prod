@@ -906,11 +906,11 @@ def result(request):
         return render(request, 'dashboard/Result.html', {'user': user, 'search_filter': search_filter, 'job_name': job_name, 'start_date': start_date, 'end_date': end_date})
     return redirect('logout')
 
-def resultsdetail(request,id,level):
+def resultsdetail(request,id):
     
     if request.session.get('user_authenticated'):
         cursor = connection.cursor()
-        cursor.execute('EXEC getdetailresult %s,%s',[id,level])
+        cursor.execute('EXEC getdetailresult %s',[id])
         result_data = cursor.fetchall()
         cursor.close()
         # Create a dictionary to store the transformed data
