@@ -198,7 +198,7 @@
       <h1>Better Luck Next time!</h1>
       <p>You are not reached the requirement!</p>
       <a href="{%url 'logout'%}"  style="background-color: #007bff; color: #fff; border: none; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;" >logout</a>
-      {% else %}
+      {% elif passorfail == 'PASS' and level == '1' %}
       <h1>Congratulations!</h1>
       <p>You passed the exam!</p>
       
@@ -219,6 +219,29 @@
       <div class="confetti"></div>
       <div class="confetti"></div>
     </div>
+
+    {% elif passorfail == 'PASS' and level == '2' %}
+    <h1>Congratulations!</h1>
+      <p>You passed the exam!</p>
+      
+      <span> click here for logout<button onclick="location.href='{% url 'logout' %}';" style="background-color: #007bff; color: #fff; border: none; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">logout</button></span>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+      <div class="confetti"></div>
+    </div>
+
     {% endif %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
     <script>
@@ -226,3 +249,7 @@
     </script>
   </body>
 </html>
+
+
+
+

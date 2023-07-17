@@ -1,0 +1,314 @@
+{% extends 'base.html' %} {% load static %} 
+
+
+<!-- your code here -->
+
+{% comment %} {% load bootstrap5 %} {% endcomment %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .search {
+            width: 200px;
+        }
+        .test-container {
+            background-color: #f2f2f2;
+            border-radius: 10px;
+            width: calc(33.33% - 20px);
+            padding: 10px;
+            margin: 10px;
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: top;
+          }
+        
+          .test-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+          }
+          
+        .validation-msg {
+            color: red;
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+        .invalid {
+            border-color: red;
+        }
+            
+    </style>
+    <!-- Include Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+
+  <!-- Include jQuery library -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Include Bootstrap JavaScript -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+          <div class="col-12 mt-2 dashboard-header">
+            <h2 class="my-4 dashboard-title">Test</h2>
+          </div>
+          <div class="col-9 mt-2 dashboard-header">
+            <div class="d-flex">
+              <input class="form-control search me-2" type="search" placeholder="Search">
+              <button class="btn btn-outline-success" type="submit">Search</button>
+            </div>
+          </div>
+          <div class="col-3 mt-2 dashboard-header">
+            <button class="btn btn-outline-primary" id="createTestButton" data-bs-toggle="modal" data-bs-target="#createTestModal">Create new Test</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Create Test Modal -->
+      <div class="modal fade" id="createTestModal" tabindex="-1" aria-labelledby="createTestModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="createTestModalLabel">Create Test</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <!-- Add your form or input fields here to create the test -->
+              <form id="createTestForm">
+                <div class="mb-3">
+                  <label for="testName" class="form-label">Test Name:</label>
+                  <input type="text" class="form-control" id="testName" placeholder="Enter test name">
+                </div>
+              
+                <div class="row mb-3">
+                  <div class="col">
+                    <label for="subjects" class="form-label">Subjects:</label>
+                    <select class="form-control" id="subjects" name="subjects">
+                      <option value="" disabled selected hidden>Select option</option>
+                      {% for subject in subject_list %}
+                      <option value="{{ subject.1 }}">{{ subject.1 }}</option>
+                      {% endfor %}
+                      <!-- Add more subject options as needed -->
+                    </select>
+                  </div>
+              
+                  <div class="col">
+                    <label for="L1" class="form-label">L1:</label>
+                    <input type="number" class="form-control" id="L1" name="L1" placeholder="Enter value" oninput="validateInput(this)">
+                    <div id="L1ValidationMsg" class="validation-msg"></div>
+                  </div>
+              
+                  <div class="col">
+                    <label for="L2" class="form-label">L2:</label>
+                    <input type="number" class="form-control" id="L2" name="L2" placeholder="Enter value" oninput="validateInput(this)">
+                    <div id="L2ValidationMsg" class="validation-msg"></div>
+                  </div>
+              
+                  <div class="col">
+                    <label for="L3" class="form-label">L3:</label>
+                    <input type="number" class="form-control" id="L3" name="L3" placeholder="Enter value" oninput="validateInput(this)">
+                    <div id="L3ValidationMsg" class="validation-msg"></div>
+                  </div>
+                </div>
+              
+                <div id="additionalRows">
+                  <!-- Additional rows will be dynamically added here -->
+                </div>
+              
+                <button type="button" class="btn btn-primary" onclick="addRow()">Add Row</button>
+
+                <div class="row mb-3">
+                <label for="subjects" class="form-label">Subjects:</label>
+                <select class="form-control" id="subjects" name="subjects">
+                  <option value="" disabled selected hidden>Select option</option>
+                  {% for subject in subject_list %}
+                  <option value="{{ subject.1 }}">{{ subject.1 }}</option>
+                  {% endfor %}
+                  <!-- Add more subject options as needed -->
+                </select>
+                </div>
+
+              </form>
+               
+              
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" id="saveTestButton">Save Test</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Container to display the created tests -->
+      <div class="container mt-4">
+        <div class="row" id="createdTestsContainer">
+          <!-- The created tests will be dynamically added here -->
+        </div>
+      </div>      
+</body>
+<script>
+    
+    
+        $(document).ready(function() {
+          var createdTests = []; // Array to store the created tests
+        
+          // Handle the click event of the "Save Test" button in the modal
+          $('#saveTestButton').click(function() {
+            var testName = $('#testName').val(); // Get the test name from the input field
+        
+            // Create an array to store the rows data
+            var rowsData = [];
+        
+            // Retrieve data from the first row
+            var firstRowSubjects = $('[name="subjects"]').val();
+            var firstRowL1 = $('[name="L1"]').val();
+            var firstRowL2 = $('[name="L2"]').val();
+            var firstRowL3 = $('[name="L3"]').val();
+        
+            // Create an object for the first row data
+            var firstRowData = {
+              subjects: firstRowSubjects,
+              L1: firstRowL1,
+              L2: firstRowL2,
+              L3: firstRowL3
+            };
+        
+            rowsData.push(firstRowData); // Add the first row data to the array
+        
+            // Iterate over each dynamically added row
+            $('#additionalRows .row').each(function() {
+              var row = $(this);
+              var subjects = row.find('[name="subjects"]').val(); // Get the selected subject from the dropdown
+              var L1 = row.find('[name="L1"]').val(); // Get the value of the L1 input field
+              var L2 = row.find('[name="L2"]').val(); // Get the value of the L2 input field
+              var L3 = row.find('[name="L3"]').val(); // Get the value of the L3 input field
+        
+              // Create the test object with the row data
+              var rowData = {
+                subjects: subjects,
+                L1: L1,
+                L2: L2,
+                L3: L3
+              };
+        
+              rowsData.push(rowData); // Add the row data to the array
+            });
+        
+            // Create the test object with the test name and rows data
+            var test = {
+              name: testName,
+              rows: rowsData
+            };
+
+            console.log(test)
+        
+            createdTests.push(test); // Add the test to the array of created tests
+        
+            // Clear the input fields
+            $('#testName').val('');
+            $('[name="subjects"]').val(''); // Set default subject value after saving
+            $('[name="L1"]').val('');
+            $('[name="L2"]').val('');
+            $('[name="L3"]').val('');
+        
+            // Create a new container for the created test
+            var testContainer = $('<div>').addClass('test-container col-3');
+            var testNameElement = $('<div>').addClass('test-name').text(test.name);
+        
+            // Append the created test to the new container
+            testContainer.append(testNameElement);
+        
+            // Iterate over the rows data and display them
+            rowsData.forEach(function(rowData) {
+              var rowElement = $('<div>').addClass('row-data').text('Subjects: ' + rowData.subjects + ', L1: ' + rowData.L1 + ', L2: ' + rowData.L2 + ', L3: ' + rowData.L3);
+              testContainer.append(rowElement);
+            });
+        
+            $('#createdTestsContainer').append(testContainer);
+        
+            // Close the modal
+            $('#createTestModal').modal('hide');
+          });
+        
+          // Handle the click event of the "Create new Test" button
+          $('#createTestButton').click(function() {
+            // Clear any previous input values in the modal
+            $('#testName').val('');
+            $('[name="subjects"]').val(''); // Set default subject value
+            $('[name="L1"]').val('');
+            $('[name="L2"]').val('');
+            $('[name="L3"]').val('');
+          });
+        });
+       
+        
+        
+
+      
+        function addRow() {
+          var rowHtml = `
+            <div class="row mb-3">
+              <div class="col">
+                <label for="subjects" class="form-label">Subjects:</label>
+                <select class="form-control" name="subjects">
+                  <option value="" disabled selected hidden>Select option</option>
+                  {% for subject in subject_list %}
+                      <option value="{{ subject.1 }}">{{ subject.1 }}</option>
+                    {% endfor %}
+                  <!-- Add more subject options as needed -->
+                </select>
+              </div>
+        
+              <div class="col">
+                <label for="L1" class="form-label">L1:</label>
+                <input type="number" class="form-control" name="L1" placeholder="Enter value" oninput="validateInput(this)">
+                <div class="validation-msg"></div>
+              </div>
+        
+              <div class="col">
+                <label for="L2" class="form-label">L2:</label>
+                <input type="number" class="form-control" name="L2" placeholder="Enter value" oninput="validateInput(this)">
+                <div class="validation-msg"></div>
+              </div>
+        
+              <div class="col">
+                <label for="L3" class="form-label">L3:</label>
+                <input type="number" class="form-control" name="L3" placeholder="Enter value" oninput="validateInput(this)">
+                <div class="validation-msg"></div>
+              </div>
+            </div>
+          `;
+        
+          var additionalRowsDiv = document.getElementById("additionalRows");
+          var row = document.createElement("div");
+          row.innerHTML = rowHtml;
+          additionalRowsDiv.appendChild(row);
+        }
+        
+        function validateInput(input) {
+            var inputValue = input.value.trim();
+            var validationMsg = input.parentNode.querySelector('.validation-msg');
+          
+            if (/^\d+$/.test(inputValue)) {
+              validationMsg.textContent = ''; // Clear validation message if the value is valid
+              input.classList.remove('invalid');
+            } else {
+              validationMsg.textContent = 'Please enter a whole number'; // Display validation message
+              input.classList.add('invalid');
+            }
+          }
+        
+      
+      
+      
+      
+</script>
+</html>
+{% endblock content %}

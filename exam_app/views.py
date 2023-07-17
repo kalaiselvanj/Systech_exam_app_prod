@@ -180,10 +180,18 @@ def registration(request):
 
         try:
             cursor = connection.cursor()
-            cursor.execute('exec insertregistrationdata %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s' ,[Applyingfor,firstname,lastname,gender,dob,MaritalStatus,phone,email,CAddress,PAddress,Institution10,CGPA10,YOP10,Institution12,CGPA12,YOP12,Branch12,Graduation,UGCollege,UGDiscipline,CGPAUG,YOPUG,PGraduation,PGDiscipline,PGCollege,CGPAPG,YOPPG,Source,Referredthrough,Applied,Adate,countrycode,Id_proof,ID_NO,iddata,facedata,new_id,current_date])
-            # return render(request, 'registration/login.html')
-            return redirect('login')
-
+            cursor.execute('select First_Name,Last_Name,DOB,phone,email,Applied_For FROM tb_Candidate WHERE First_Name = %s and last_name =%s and DOB = %s and phone = %s and email = %s and Applied_for = %s',[firstname, lastname, dob, phone,email,Applyingfor])
+            result = cursor.fetchone()
+            cursor.close()
+            if result:
+                # Already registered
+                # return render(request, 'registration/login.html')
+                return redirect('logout')
+            else:
+                cursor = connection.cursor()
+                cursor.execute('exec insertregistrationdata %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s' ,[Applyingfor,firstname,lastname,gender,dob,MaritalStatus,phone,email,CAddress,PAddress,Institution10,CGPA10,YOP10,Institution12,CGPA12,YOP12,Branch12,Graduation,UGCollege,UGDiscipline,CGPAUG,YOPUG,PGraduation,PGDiscipline,PGCollege,CGPAPG,YOPPG,Source,Referredthrough,Applied,Adate,countrycode,Id_proof,ID_NO,iddata,facedata,new_id,current_date])
+                # return render(request, 'registration/login.html')
+                return redirect('login')
 
         finally:
             cursor.close()
@@ -429,6 +437,7 @@ def show_candidate_data(request, id):
         result_1 = cursor.fetchall()
         cursor.execute('exec [get_pass_or_fail_candidate] %s, %s, %s', [jobPosition, user_id, 2])
         result_2 = cursor.fetchall()
+        
 
         context = {
             'candidate_data': candidate_data,
@@ -977,7 +986,7 @@ def exam_main_dashboard(request):
             elif (candidate_data[57] == 1 and (candidate_data[38] == 0 or candidate_data[38] == 1) and candidate_data[58] == 'PASS'):
                 level = 2
             else:
-                return HttpResponse('Completed your exam any quries contact HR')
+                return redirect('logout')
             cursor = connection.cursor()
             cursor.execute('exec [get_candidate_applied_job_details] %s,%s', [level, candidate_data[31]])
             subjects = cursor.fetchall()
@@ -1174,22 +1183,26 @@ def detect_face(request):
 
 
 def camera_part(request):
+    return render(request, 'exam_portal/camera_part_2.html')
 
-    connection_string = "DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net"
-    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-    container_name = "20230710003"
-    container_client = blob_service_client.get_container_client(container_name)
+def test(request):
+    if request.session.get('user_authenticated'):
+        cursor = connection.cursor()
+        cursor.execute('exec get_subjectData')
+        subject_list = cursor.fetchall()
 
-    blob_urls = []
-    for blob in container_client.list_blobs():
-        blob_url = container_client.url + '/' + blob.name
-        blob_urls.append(blob_url)
+        if request.method == 'POST':
+            subject = 6
+            level = 2
+            no_of_ques = 3
 
-    context = {
-        'blob_urls': blob_urls
-    }
+            
 
-    return render(request, 'exam_portal/camera_part.html', context)
+        context = {
+        'subject_list': subject_list
+        }
+        return render(request,'dashboard/test.html', context)
+    return redirect('login')
 
 
 

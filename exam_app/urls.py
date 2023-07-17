@@ -46,6 +46,7 @@ urlpatterns = [
     path('registercandidate/',views.registercandidate,name='registercandidate'),
     path('detect_face/', views.detect_face, name='detect_face'),
     path('video/', views.camera_part, name='video'),
+    path('test/',views.test,name="test"),
     
 ]
 
