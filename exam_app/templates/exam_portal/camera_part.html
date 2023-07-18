@@ -1,12 +1,131 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Blob Images</title>
+  <title>Camera and Microphone Check</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    #camera-preview,
+    #microphone-preview {
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+    }
+
+    #microphone-controls {
+      margin-top: 20px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+      transition-duration: 0.4s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #log-container {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-top: 20px;
+      background-color: #f5f5f5;
+      max-height: 60px;
+      overflow-y: auto;
+    }
+  </style>
 </head>
 <body>
-    <h1>Blob Images</h1>
-    {% for blob_url in blob_urls %}
-        <img src="{{ blob_url }}" alt="Blob Image">
-    {% endfor %}
+  <h1>Camera Check:</h1>
+  <video id="camera-preview" autoplay></video>
+
+  <h1>Microphone Check:</h1>
+  <audio id="microphone-preview" autoplay></audio>
+  <div id="microphone-controls">
+    <button id="start-microphone-check">Start Microphone Check</button>
+    <button id="stop-microphone-check">Stop Microphone Check</button>
+  </div>
+
+  <div id="log-container"></div>
+
+  <script>
+    const logContainer = document.getElementById('log-container');
+
+    function logMessage(message) {
+      logContainer.textContent = message;
+    }
+
+    let cameraStream;
+    let microphoneStream;
+    let microphoneRecorder;
+
+    // Camera check
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        const videoElement = document.getElementById('camera-preview');
+        videoElement.srcObject = stream;
+        cameraStream = stream;
+        logMessage('Camera check successful');
+      })
+      .catch((error) => {
+        console.error('Error accessing camera:', error);
+        logMessage(`Error accessing camera: ${error.message}`);
+      });
+
+    // Microphone check
+    const startMicrophoneCheckButton = document.getElementById('start-microphone-check');
+    const stopMicrophoneCheckButton = document.getElementById('stop-microphone-check');
+
+    startMicrophoneCheckButton.addEventListener('click', startMicrophoneCheck);
+    stopMicrophoneCheckButton.addEventListener('click', stopMicrophoneCheck);
+
+    function startMicrophoneCheck() {
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+          const audioContext = new AudioContext();
+          const source = audioContext.createMediaStreamSource(stream);
+          const analyser = audioContext.createAnalyser();
+          source.connect(analyser);
+          microphoneStream = stream;
+          microphoneRecorder = analyser;
+
+          logMessage('Microphone checked successfully');
+        })
+        .catch((error) => {
+          console.error('Error accessing microphone:', error);
+          logMessage(`Error accessing microphone: ${error.message}`);
+        });
+    }
+
+    function stopMicrophoneCheck() {
+      if (microphoneStream) {
+        microphoneStream.getTracks().forEach((track) => track.stop());
+        microphoneStream = null;
+        microphoneRecorder = null;
+
+        logMessage('Microphone check stopped');
+      }
+    }
+  </script>
 </body>
 </html>

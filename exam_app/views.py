@@ -23,8 +23,8 @@ import datetime
 from django.core.paginator import Paginator
 # import dlib
 # import socket
-# import os
-# import io
+import os
+import io
 import xlsxwriter
 import base64
 # from django.http import HttpResponse

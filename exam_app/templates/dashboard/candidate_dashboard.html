@@ -399,20 +399,20 @@ input[type="date"]:focus {
 }
 
 
-  .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 2rem;
-  }
-  
-  .dashboard-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #000000;
-    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-    margin-bottom: 30px;
-  }
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 500
+  color: #000000;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  margin-bottom: 30px;
+}
   ::-webkit-scrollbar {
     width: 6px;
   }
@@ -437,8 +437,8 @@ input[type="date"]:focus {
 <div class="container">
     <div class="row">
 
-      <div class="col-12 today-attendees">
-        <h5 class="headingtoday">Registered Candidates</h5>
+      <div class="col-12 dashboard-header">
+        <h5 class="dashboard-title">Registered Candidates</h5>
       </div>
       <form method="GET" class="form-inline">
         
@@ -493,69 +493,79 @@ input[type="date"]:focus {
           
         
    
-      <div class="table-responsive"  style="height: 70vh; overflow-y: auto; overflow-x: auto; margin-top:20px;">
-      <table class="table table-bordered text-center" >
-        <thead class="sticky-thead">
-          <tr >
-            <th>S.No</th>
-            <th>Candidate Name</th>
-            <th>User id</th>
-            <th>Password</th>
-            <th>Applied for</th>
-            <th>Start time</th>
-            <th>End time</th>
-            <th>Remaning time</th>
-            <th>unlock <input type="checkbox" id="select-all-unlock"></th>
-            <th>skip level 1 <input type="checkbox" id="select-all-skip-level-1"></th>
-          </tr>
-        </thead>
-        <tr>
-        {% for candidate in page_obj%}
-            <td> </td>
-            <td><a href="{% url 'show_candidate_data' id=candidate.0 %}">{{candidate.3}}</a></td>
-            <td>{{candidate.4}}</td>
-            <td>{{candidate.5}}</td>
-            <td>{{candidate.6}}</td>
-            <td>{{candidate.7}}</td>
-            <td>{{candidate.8}}</td>
-            <td>{{candidate.9}}</td>
-          {% if not candidate.10 %}
-          <td><input type="checkbox" class="row-checkbox" name="unlock" value="{{candidate.0}}"></td>
-          {% else %}
-          <td><img
-            src="{% static 'icons/check-circle-fill.svg' %}"
-            alt="Icon"
-          /></td>
-          {% endif %}
-          {% if not candidate.11 %}
-          <td><input type="checkbox" class="row-checkbox" name="skip_level_1" value="{{candidate.0}}"></td>
-          {% else %}
-          <td><img
-            src="{% static 'icons/check-circle-fill.svg' %}"
-            alt="Icon" 
-          /></td>
-          {% endif %}
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="10">No candidates found.</td>
-        </tr>
-        {% endfor %}
-      </table>
-      <div class="pagination">
-        {% if page_obj.has_previous %}
-          <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-        {% endif %}
-        <div style="width:10px;"></div>
-        <span class="current-page">{{ page_obj.number }}</span>
-        <div style="width:10px;"></div>
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Next</a>
-        {% endif %}
-        </div>
-    </div>  
+          <div class="table-responsive" style="height: 70vh; overflow-y: auto; overflow-x: auto; margin-top: 20px;">
+            <table class="table table-bordered text-center">
+              <thead class="sticky-thead">
+                <tr>
+                  <th>S.No</th>
+                  <th>Candidate Name</th>
+                  <th>User ID</th>
+                  <th>Password</th>
+                  <th>Applied for</th>
+                  {% comment %} <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Remaining Time</th> {% endcomment %}
+                  <th>Unlock <input type="checkbox" id="select-all-unlock"></th>
+                  <th>Skip Level 1 <input type="checkbox" id="select-all-skip-level-1"></th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                {% for candidate in page_obj %}
+                <tr>
+                  <td></td>
+                  <td><a href="{% url 'show_candidate_data' id=candidate.0 %}">{{ candidate.3 }}</a></td>
+                  <td>{{ candidate.4 }}</td>
+                  <td>{{ candidate.5 }}</td>
+                  <td>{{ candidate.6 }}</td>
+                  {% comment %} <td>{{ candidate.7 }}</td>
+                  <td>{{ candidate.8 }}</td>
+                  <td>{{ candidate.9 }}</td> {% endcomment %}
+                  {% if not candidate.10 %}
+                  <td><input type="checkbox" class="row-checkbox" name="unlock" value="{{ candidate.0 }}"></td>
+                  {% else %}
+                  <td><img src="{% static 'icons/check-circle-fill.svg' %}" alt="Icon" /></td>
+                  {% endif %}
+                  {% if not candidate.11 %}
+                  <td><input type="checkbox" class="row-checkbox" name="skip_level_1" value="{{ candidate.0 }}"></td>
+                  {% else %}
+                  <td><img src="{% static 'icons/check-circle-fill.svg' %}" alt="Icon" /></td>
+                  {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="10">No candidates found.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <div class="pagination" id="pagination">
+              {% if page_obj.has_previous %}
+              <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+              {% endif %}
+              {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <a href="#" onclick="changePage({{ num }})" class="active">{{ num }}</a>
+                {% else %}
+                <a href="#" onclick="changePage({{ num }})">{{ num }}</a>
+                {% endif %}
+              {% endfor %}
+              {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">Next</a>
+              {% endif %}
+            </div>
+          </div>
+          
+          
+          
+          
+            
   </form>
   <script>
+    
+    function changePage(page) {
+      window.location.href = "{% url 'candidate_dashboard' %}?page=" + page;
+    }
+    
     function getCookie(name) {
       var cookieValue = null;
       if (document.cookie && document.cookie !== '') {
@@ -633,6 +643,30 @@ input[type="date"]:focus {
       });
     
     });
+
+    // Get the current date
+  var currentDate = new Date();
+
+  // Check if the start_date is empty
+  if (!document.getElementById("StartDate").value) {
+    // Set the value of start_date to the current month's starting date
+    var currentMonthStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+    var year = currentMonthStartDate.getFullYear();
+    var month = (currentMonthStartDate.getMonth() + 1).toString().padStart(2, '0');
+    var day = "01";
+    var formattedStartDate = `${year}-${month}-${day}`;
+    document.getElementById("StartDate").value = formattedStartDate;
+  }
+
+  // Check if the end_date is empty
+  if (!document.getElementById("EndDate").value) {
+    // Set the value of end_date to the current date
+    var year = currentDate.getFullYear();
+    var month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+    var day = currentDate.getDate().toString().padStart(2, '0');
+    var formattedEndDate = `${year}-${month}-${day}`;
+    document.getElementById("EndDate").value = formattedEndDate;
+  }
   </script>
   {% endblock content %}
   
