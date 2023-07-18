@@ -542,17 +542,21 @@ input[type="date"]:focus {
               {% if page_obj.has_previous %}
               <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
               {% endif %}
-              {% for num in page_obj.paginator.page_range %}
+              {% comment %} {% for num in page_obj.paginator.page_range %}
                 {% if page_obj.number == num %}
                 <a href="#" onclick="changePage({{ num }})" class="active">{{ num }}</a>
                 {% else %}
                 <a href="#" onclick="changePage({{ num }})">{{ num }}</a>
                 {% endif %}
-              {% endfor %}
+                {% if not forloop.last %}
+                <span class="page-space"> </span>
+                {% endif %}
+              {% endfor %} {% endcomment %}
               {% if page_obj.has_next %}
               <a href="?page={{ page_obj.next_page_number }}">Next</a>
               {% endif %}
             </div>
+            
           </div>
           
           
