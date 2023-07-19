@@ -426,6 +426,41 @@ input[type="date"]:focus {
     background: #f0f0f0;
     border-radius: 3px;
   }
+
+  #pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  #prevBtn,
+  #nextBtn {
+    background: #1abc9c;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  #prevBtn:hover,
+  #nextBtn:hover {
+    background: #1abc9c;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  #pageNumbers {
+    margin: 0 10px;
+    font-size: 16px;
+  }
+  
+  
    
   
         </style>
@@ -489,6 +524,7 @@ input[type="date"]:focus {
                 <button type="submit" class="btn btn-primary" style="height:40px"><i class="fa fa-search"></i></button>
               </div>
             </div>
+          </form>
           </div>
           
         
@@ -510,7 +546,7 @@ input[type="date"]:focus {
                 </tr>
               </thead>
               <tbody id="tableBody">
-                {% for candidate in page_obj %}
+                {% for candidate in candidate_data %}
                 <tr>
                   <td></td>
                   <td><a href="{% url 'show_candidate_data' id=candidate.0 %}">{{ candidate.3 }}</a></td>
@@ -538,23 +574,10 @@ input[type="date"]:focus {
                 {% endfor %}
               </tbody>
             </table>
-            <div class="pagination" id="pagination">
-              {% if page_obj.has_previous %}
-              <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-              {% endif %}
-              {% comment %} {% for num in page_obj.paginator.page_range %}
-                {% if page_obj.number == num %}
-                <a href="#" onclick="changePage({{ num }})" class="active">{{ num }}</a>
-                {% else %}
-                <a href="#" onclick="changePage({{ num }})">{{ num }}</a>
-                {% endif %}
-                {% if not forloop.last %}
-                <span class="page-space"> </span>
-                {% endif %}
-              {% endfor %} {% endcomment %}
-              {% if page_obj.has_next %}
-              <a href="?page={{ page_obj.next_page_number }}">Next</a>
-              {% endif %}
+            <div id="pagination">
+              <button id="prevBtn">&lt; Prev</button>
+              <span id="pageNumbers"></span>
+              <button id="nextBtn">Next &gt;</button>
             </div>
             
           </div>
@@ -563,12 +586,55 @@ input[type="date"]:focus {
           
           
             
-  </form>
+
   <script>
     
-    function changePage(page) {
-      window.location.href = "{% url 'candidate_dashboard' %}?page=" + page;
+    function paginateTable(pageSize) {
+      var table = document.querySelector('.table');
+      var tbody = table.querySelector('tbody');
+      var rows = Array.from(tbody.querySelectorAll('tr'));
+    
+      var currentPage = 1;
+      var totalPages = Math.ceil(rows.length / pageSize);
+    
+      function showPage(page) {
+        currentPage = page;
+    
+        var start = (currentPage - 1) * pageSize;
+        var end = start + pageSize;
+    
+        rows.forEach(function(row, index) {
+          row.style.display = (index >= start && index < end) ? '' : 'none';
+        });
+    
+        updatePageNumbers();
+      }
+    
+      function updatePageNumbers() {
+        var pageNumbers = document.getElementById('pageNumbers');
+        pageNumbers.textContent = currentPage + ' / ' + totalPages;
+      }
+    
+      function goToPrevPage() {
+        if (currentPage > 1) {
+          showPage(currentPage - 1);
+        }
+      }
+    
+      function goToNextPage() {
+        if (currentPage < totalPages) {
+          showPage(currentPage + 1);
+        }
+      }
+    
+      document.getElementById('prevBtn').addEventListener('click', goToPrevPage);
+      document.getElementById('nextBtn').addEventListener('click', goToNextPage);
+    
+      showPage(1);
     }
+  
+    paginateTable(5); // Change the page size as needed
+  
     
     function getCookie(name) {
       var cookieValue = null;
@@ -673,4 +739,3 @@ input[type="date"]:focus {
   }
   </script>
   {% endblock content %}
-  

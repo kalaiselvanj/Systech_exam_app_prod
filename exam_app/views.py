@@ -95,8 +95,7 @@ def registration(request):
     pg = cursor.fetchall()
     cursor.execute('exec getBranch')
     branch = cursor.fetchall()
-    filter_by=1    
-    cursor.execute('exec getPositiondata %s',[filter_by])      
+    cursor.execute('exec get_skill_applied_for_data')     
     jobs = cursor.fetchall()
     if request.method == "POST":  
         Applyingfor = request.POST.get('Applyingfor')
@@ -389,6 +388,7 @@ def candidate_dashboard(request):
         cursor = connection.cursor()
         cursor.execute('exec get_data_dashboard')
         dash_data = cursor.fetchall()
+        print(dash_data)
         
         search_name = request.GET.get('search-bar')
         if search_name == "":
@@ -396,23 +396,21 @@ def candidate_dashboard(request):
         
         cursor.execute('exec get_data_tb_candidate_av @name=%s, @applied_for=%s, @start_date=%s, @end_date=%s', [search_name, applied_for, start_date, end_date])
         candidate_data = cursor.fetchall()
-        
-        # candidate_data = [...]  # Your list of candidate data
-        
-        items_per_page = 5  # Number of items to display per page
-        page_number = request.GET.get('page')  # Get the requested page number from the URL parameters
-        
-        paginator = Paginator(candidate_data, items_per_page)  # Create a paginator object
-        page_obj = paginator.get_page(page_number)  
+
         print(candidate_data)
+
+        candidate_data_json = json.dumps(candidate_data)
+
+        print(candidate_data_json)
         
+         
         cursor.execute('exec get_skill_applied_for_data')
         search_filter = cursor.fetchall()
         cursor.close()  # Close the cursor after executing the queries
         
         print(start_date)
         print(end_date)
-        return render(request, 'dashboard/candidate_dashboard.html', {'dash_data': dash_data, 'page_obj': page_obj, 'search_filter': search_filter, 'start_date': start_date, 'end_date': end_date})
+        return render(request, 'dashboard/candidate_dashboard.html', {'dash_data': dash_data, 'candidate_data': candidate_data, 'search_filter': search_filter, 'start_date': start_date, 'end_date': end_date})
     
     return redirect('logout')
 
@@ -852,6 +850,9 @@ def activate_quest(request, id):
 def alertpage(request):
     return render(request,"exam_portal/alertpage.html")
 
+def alert_page_exam(request):
+    return render(request,'dashboard/alert_page_exam.html')
+
 def logout(request):
     request.session.flush()
     request.session['user_authenticated'] = False    
@@ -890,6 +891,8 @@ def result(request):
         print(end_date)
         cursor.execute('exec [view_results_bycandidate] %s,%s,%s,%s,%s', [job_name, level, filter, start_date, end_date])
         user = cursor.fetchall()
+
+        print(user)
 
         # Close the cursor after fetching the data
         cursor.close()
