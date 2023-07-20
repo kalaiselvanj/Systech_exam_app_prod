@@ -69,8 +69,8 @@ def login(request):
                     email = user[2]
                     request.session['username'] = user_name  
                     request.session['email'] = email                    
-                    request.session['user_authenticated'] = True                    
-                    return redirect('/exam_main_dashboard')
+                    request.session['user_authenticated'] = True                   
+                    return redirect('/introcheckpage')
                 
                 # If the user is valid but not yet activated                
                 elif user[3] != password:
@@ -1061,6 +1061,9 @@ def submit_answers(request):
         return JsonResponse({'status': 'success'})
     else:
         return JsonResponse({'status': 'error'})
+    
+def introcheckpage(request):
+    return render(request,'exam_portal/introcheckpage.html')
 
 def exam_portal(request):
     global is_recording
