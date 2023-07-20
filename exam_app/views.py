@@ -630,15 +630,22 @@ def subject(request):
     
 def new_subject(request):
     if request.session.get('user_authenticated'):
-        if request.method == "POST":  
+        if request.method == "POST":
             subject = request.POST.get('subject')
             try:
                 cursor = connection.cursor()
-                cursor.execute('exec insertSubject %s',[subject])
-                return redirect('/subject')  
+                cursor.execute("SELECT subject FROM tb_subject")
+                subject_all = cursor.fetchall()
+                subject_list = [item[0] for item in subject_all]
+                print(subject_list)
+                if subject in subject_list:
+                    return render(request, 'dashboard/new_subject.html', {'errors': 'This subject already exists'})
+                else:
+                    cursor.execute('exec insertSubject %s', [subject])
+                    return redirect('/subject')
             finally:
                 cursor.close()
-                
+
         return render(request, 'dashboard/new_subject.html')
     return redirect('login')
 
@@ -1067,6 +1074,19 @@ def exam_portal(request):
             print(jobPosition)
             print(user_id)
 
+            cursor = connection.cursor()
+            cursor.execute('exec get_details_for_exams_questions %s,%s',[jobPosition,level])
+            subject_list = cursor.fetchall()
+            print(subject_list)
+            final_quest_list = []
+            for details in subject_list:
+                # print(details[1],details[0])
+                cursor.execute('exec getExamQuestion1 %s,%s,%s,%s',[jobPosition,level,details[1],details[0]])
+                x = cursor.fetchall()
+                # print("inside table list :  " ,x)
+                final_quest_list.extend(x)
+            print('final:  ' ,final_quest_list)
+
             # Start a new thread to run the start_recording function in parallel
             # is_recording = True
             # recording_thread = threading.Thread(target=start_recording, args=(datetime.timedelta(minutes=int(total_duration)),))
@@ -1075,9 +1095,10 @@ def exam_portal(request):
             cursor = None  # Initialize the cursor variable to None
             try:
                 cursor = connection.cursor()
-                cursor.execute('exec getExamQuestion %s,%s', [jobPosition,level])
-                my_list = cursor.fetchall()
-                print(my_list)
+                # cursor.execute('exec getExamQuestion %s,%s', [jobPosition,level])
+                # my_list = cursor.fetchall()
+                # print(my_list)
+                my_list = final_quest_list
                 appliedfor = my_list[0][9]
                 for tup in my_list:
                     quest_id, subject_id =  tup[6], tup[7]
@@ -1115,8 +1136,8 @@ def create_or_get_blob_container(connection_string, container_name):
         container_client = blob_service_client.get_container_client(container_name)
         print("Blob container already exists.")
     else:
-        container_client = blob_service_client.create_container(container_name)
-        container_client = container_client.set_container_access_policy(public_access=PublicAccess.Container)
+        container_client = blob_service_client.create_container(container_name, public_access="container")
+        # container_client = container_client.set_container_access_policy(public_access=PublicAccess.Container)
         print("Blob container created successfully.")
     
     return container_client
