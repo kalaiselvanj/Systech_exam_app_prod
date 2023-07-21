@@ -509,21 +509,26 @@ input[type="date"]:focus {
           
         
           <div class="row justify-content-between align-items-center mt-3">
+            <div class="col-md-6 d-flex justify-content-start align-items-center justify-content-start">
+              <div class="d-flex align-items-center justify-content-start">
+                <input type="text" id="search-bar" style="height: 40px; margin-left: 40px;" name="search-bar" placeholder="Search..." class="mr-2">
+                <button type="submit" class="btn btn-primary" style="height: 40px;"><i class="fa fa-search"></i></button>
+                <!-- Add spacing between the search button and the Excel icon -->
+                <a href="{% url 'generate_excel' %}" class="ml-2"><i class="fas fa-file-excel"></i></a>
+              </div>
+            </div>
+            
+
+            <div class="col-md-3 text-center">
+              <button type="button" class="btn btn-primary" style="margin-left:32%"id="unlocked-users-btn" onclick="this.form.submit()">Unlocked Users</button>
+            </div>
+
             <div class="col-md-3 text-center">
               <button type="button" class="btn btn-primary" style="margin-left:18%" id="skipped-level-1-btn" onclick="this.form.submit()">Skipped Level 1 Users</button>
             </div>
           
-            <div class="col-md-3 text-center">
-              <button type="button" class="btn btn-primary" style="margin-left:32%"id="unlocked-users-btn" onclick="this.form.submit()">Unlocked Users</button>
-            </div>
           
-            <div class="col-md-6 d-flex justify-content-end align-items-center justify-content-end">
-              <div class="d-flex align-items-center justify-content-end">
-                <a href="{% url 'generate_excel' %}"><i class="fas fa-file-excel"></i></a>
-                <input type="text" id="search-bar" style="height:40px;margin-left:40px " name="search-bar" placeholder="Search..." class="mr-2">
-                <button type="submit" class="btn btn-primary" style="height:40px"><i class="fa fa-search"></i></button>
-              </div>
-            </div>
+            
           </form>
           </div>
           
@@ -538,6 +543,7 @@ input[type="date"]:focus {
                   <th>User ID</th>
                   <th>Password</th>
                   <th>Applied for</th>
+                  <th>Applied Date</th>
                   {% comment %} <th>Start Time</th>
                   <th>End Time</th>
                   <th>Remaining Time</th> {% endcomment %}
@@ -549,19 +555,20 @@ input[type="date"]:focus {
                 {% for candidate in candidate_data %}
                 <tr>
                   <td></td>
-                  <td><a href="{% url 'show_candidate_data' id=candidate.0 %}">{{ candidate.3 }}</a></td>
-                  <td>{{ candidate.4 }}</td>
+                  <td  style="text-align: left;"><a href="{% url 'show_candidate_data' id=candidate.0 %}">{{ candidate.3 }}</a></td>
+                  <td  style="text-align: left;">{{ candidate.4 }}</td>
                   <td>{{ candidate.5 }}</td>
-                  <td>{{ candidate.6 }}</td>
+                  <td  style="text-align: left;">{{ candidate.6 }}</td>
+                  <td>{{ candidate.7 }}</td>
                   {% comment %} <td>{{ candidate.7 }}</td>
                   <td>{{ candidate.8 }}</td>
                   <td>{{ candidate.9 }}</td> {% endcomment %}
-                  {% if not candidate.10 %}
+                  {% if not candidate.11 %}
                   <td><input type="checkbox" class="row-checkbox" name="unlock" value="{{ candidate.0 }}"></td>
                   {% else %}
                   <td><img src="{% static 'icons/check-circle-fill.svg' %}" alt="Icon" /></td>
                   {% endif %}
-                  {% if not candidate.11 %}
+                  {% if not candidate.12 %}
                   <td><input type="checkbox" class="row-checkbox" name="skip_level_1" value="{{ candidate.0 }}"></td>
                   {% else %}
                   <td><img src="{% static 'icons/check-circle-fill.svg' %}" alt="Icon" /></td>

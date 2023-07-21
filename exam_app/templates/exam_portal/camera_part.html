@@ -1,131 +1,57 @@
+<!-- exam.html -->
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Camera and Microphone Check</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-
-    #camera-preview,
-    #microphone-preview {
-      width: 100%;
-      max-width: 400px;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-    }
-
-    #microphone-controls {
-      margin-top: 20px;
-    }
-
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      cursor: pointer;
-      transition-duration: 0.4s;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    #log-container {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-top: 20px;
-      background-color: #f5f5f5;
-      max-height: 60px;
-      overflow-y: auto;
-    }
-  </style>
+    <title>Online Exam</title>
 </head>
 <body>
-  <h1>Camera Check:</h1>
-  <video id="camera-preview" autoplay></video>
+    <h1>{{ exam.title }}</h1>
+    <!-- Display exam questions and answers here... -->
 
-  <h1>Microphone Check:</h1>
-  <audio id="microphone-preview" autoplay></audio>
-  <div id="microphone-controls">
-    <button id="start-microphone-check">Start Microphone Check</button>
-    <button id="stop-microphone-check">Stop Microphone Check</button>
-  </div>
+    <div id="timer">Time remaining: <span id="countdown"></span></div>
 
-  <div id="log-container"></div>
+    <script>
+        // JavaScript code for the countdown timer
+        var countdownEl = document.getElementById('countdown');
+        var totalDuration = countdownEl.dataset.totalDuration;
+        var countDownDate = new Date().getTime() + (totalDuration * 60 * 1000);
 
-  <script>
-    const logContainer = document.getElementById('log-container');
+        // Check if the timestamp exists in the local storage
+        var storedTimestamp = localStorage.getItem('countDownDate');
+        if (storedTimestamp) {
+            countDownDate = parseInt(storedTimestamp, 10);
+        } else {
+            // Save the initial timestamp in the local storage
+            localStorage.setItem('countDownDate', countDownDate);
+        }
 
-    function logMessage(message) {
-      logContainer.textContent = message;
-    }
+        // Function to update the timer
+        function updateTimer() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
 
-    let cameraStream;
-    let microphoneStream;
-    let microphoneRecorder;
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    // Camera check
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        const videoElement = document.getElementById('camera-preview');
-        videoElement.srcObject = stream;
-        cameraStream = stream;
-        logMessage('Camera check successful');
-      })
-      .catch((error) => {
-        console.error('Error accessing camera:', error);
-        logMessage(`Error accessing camera: ${error.message}`);
-      });
+            document.getElementById("countdown").innerHTML = hours + ":"
+            + minutes + ":" + seconds + "";
 
-    // Microphone check
-    const startMicrophoneCheckButton = document.getElementById('start-microphone-check');
-    const stopMicrophoneCheckButton = document.getElementById('stop-microphone-check');
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = "EXPIRED";
+                alert("Your time is up. Please submit your answers.");
+                window.location.href = "{% url 'submission' %}?level={{level}}&applied_for={{appliedfor}}&user={{user_id}}";
+            }
+        }
 
-    startMicrophoneCheckButton.addEventListener('click', startMicrophoneCheck);
-    stopMicrophoneCheckButton.addEventListener('click', stopMicrophoneCheck);
+        // Update the count down every 1 second
+        var x = setInterval(updateTimer, 1000);
 
-    function startMicrophoneCheck() {
-      navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then((stream) => {
-          const audioContext = new AudioContext();
-          const source = audioContext.createMediaStreamSource(stream);
-          const analyser = audioContext.createAnalyser();
-          source.connect(analyser);
-          microphoneStream = stream;
-          microphoneRecorder = analyser;
-
-          logMessage('Microphone checked successfully');
-        })
-        .catch((error) => {
-          console.error('Error accessing microphone:', error);
-          logMessage(`Error accessing microphone: ${error.message}`);
+        // When the page is reloaded, remove the timestamp from local storage to reset the timer
+        window.addEventListener('beforeunload', function() {
+            localStorage.removeItem('countDownDate');
         });
-    }
-
-    function stopMicrophoneCheck() {
-      if (microphoneStream) {
-        microphoneStream.getTracks().forEach((track) => track.stop());
-        microphoneStream = null;
-        microphoneRecorder = null;
-
-        logMessage('Microphone check stopped');
-      }
-    }
-  </script>
+    </script>
 </body>
 </html>

@@ -38,6 +38,54 @@ from datetime import date
 
 
 
+# def login(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         try:
+#             cursor = connection.cursor()
+#             cursor.execute('EXEC check_valid_email @username=%s', [username])
+#             user = cursor.fetchone()
+
+#             # If the user was not found by username, try to find by email address     
+                   
+#             if not user:
+#                 cursor.execute('EXEC check_valid_email @email=%s', [username])
+#                 user = cursor.fetchone()
+#             print(user)
+#             if user:
+#                 # If the user is valid and password is correct                
+#                 if user[3] == password and user[4] == True:
+#                     user_name = user[5]
+#                     email = user[2]
+#                     request.session['username'] = user_name
+#                     request.session['email'] = email                  
+#                     request.session['user_authenticated'] = True                    
+#                     return redirect('dashboard')
+                
+#                 # If the user is valid but password is incorrect                
+#                 elif user[3] == password and user[4] == False:
+#                     user_name = user[5]
+#                     email = user[2]
+#                     request.session['username'] = user_name  
+#                     request.session['email'] = email                    
+#                     request.session['user_authenticated'] = True                   
+#                     return redirect('/introcheckpage')
+                
+#                 # If the user is valid but not yet activated                
+#                 elif user[3] != password:
+#                     return render(request, 'registration/login.html', {'error': 'Invalid Password'})
+                
+#             # If the user is invalid    
+#             elif user == None:
+#                 return render(request, 'registration/login.html', {'errors': 'Invalid credentials'})        
+#             else:
+#                 return render(request, 'registration/login.html', {'error': 'Invalid Email ID'})
+#         finally:
+#             cursor.close()
+#     # Render the login page    
+#     return render(request, 'registration/login.html')
+
 def login(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -62,19 +110,18 @@ def login(request):
                     request.session['email'] = email                  
                     request.session['user_authenticated'] = True                    
                     return redirect('dashboard')
-                
-                # If the user is valid but password is incorrect                
+                              
                 elif user[3] == password and user[4] == False:
                     user_name = user[5]
                     email = user[2]
                     request.session['username'] = user_name  
                     request.session['email'] = email                    
-                    request.session['user_authenticated'] = True                   
+                    request.session['user_authenticated'] = True                    
                     return redirect('/introcheckpage')
                 
-                # If the user is valid but not yet activated                
+                             
                 elif user[3] != password:
-                    return render(request, 'registration/login.html', {'error': 'Invalid Password'})
+                    return render(request, 'registration/login.html', {'perror': 'Invalid Password'})
                 
             # If the user is invalid    
             elif user == None:
@@ -1201,22 +1248,7 @@ def detect_face(request):
 
 
 def camera_part(request):
-
-    connection_string = "DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net"
-    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-    container_name = "20230710003"
-    container_client = blob_service_client.get_container_client(container_name)
-
-    blob_urls = []
-    for blob in container_client.list_blobs():
-        blob_url = container_client.url + '/' + blob.name
-        blob_urls.append(blob_url)
-
-    context = {
-        'blob_urls': blob_urls
-    }
-
-    return render(request, 'exam_portal/camera_part.html', context)
+    return render(request, 'exam_portal/camera_part.html')
 
 
 
