@@ -994,7 +994,7 @@ def resultsdetail(request,id,level):
         # Convert the transformed data dictionary into a list of values
         final_data = list(transformed_data.values())
         print(final_data)
-        connection_string = "DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net"
+        connection_string = "DefaultEndpointsProtocol=https;AccountName=systechstorage;AccountKey=XAc6NuwgzYj80yUSn29KeofUHMWwUU09DGp18Fb9ZMMt6aD0i68X1EYxq3QhHnH/T5my81gbrY9C+ASt5XTySg==;EndpointSuffix=core.windows.net"
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
         container_name = str(id)
         container_client = blob_service_client.get_container_client(container_name)
