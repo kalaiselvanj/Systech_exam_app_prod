@@ -461,8 +461,6 @@ def candidate_dashboard(request):
     
     return redirect('logout')
 
-
-
 def show_candidate_data(request, id):
     if request.session.get('user_authenticated'):
         cursor = connection.cursor()
@@ -540,6 +538,27 @@ def job_positions(request):
         cursor.close()
 
 
+# def add_new_job_positions(request):
+#     if request.session.get('user_authenticated'):
+#         if request.method == "POST":  
+#             job_position = request.POST.get('job_title'),
+#             isoptionrequired = request.POST.get('is_non_cs'),
+#             isbondrequired = request.POST.get('is_bond_required')
+            
+#             job_position = ''.join(job_position)
+#             isoptionrequired = ''.join(isoptionrequired)
+#             isbondrequired = ''.join(isbondrequired)
+
+#             try:
+#                 cursor = connection.cursor()
+#                 cursor.execute('exec InsertJobpositions %s, %s, %s',[job_position,isoptionrequired,isbondrequired])
+#                 return redirect('/jobposition')  
+#             finally:
+#                 cursor.close()
+             
+#         return render(request, 'dashboard/add_new_job_positions.html')
+#     return redirect('login')
+
 def add_new_job_positions(request):
     if request.session.get('user_authenticated'):
         if request.method == "POST":  
@@ -553,8 +572,15 @@ def add_new_job_positions(request):
 
             try:
                 cursor = connection.cursor()
-                cursor.execute('exec InsertJobpositions %s, %s, %s',[job_position,isoptionrequired,isbondrequired])
-                return redirect('/jobposition')  
+                cursor.execute("SELECT job_position FROM tb_jobposition")
+                jobs_all = cursor.fetchall()
+                job_list = [item[0] for item in jobs_all]
+                print(job_list)
+                if job_position in job_list:
+                    return render(request, 'dashboard/add_new_job_positions.html', {'errors': 'This Job already exists'})
+                else:
+                    cursor.execute('exec InsertJobpositions %s, %s, %s',[job_position,isoptionrequired,isbondrequired])
+                    return redirect('/jobposition')  
             finally:
                 cursor.close()
              
@@ -629,14 +655,44 @@ def delete_subject(request, id):
             cursor.close()
     return redirect('login')
 
+# def edit_subject(request, id):
+#     if request.session.get('user_authenticated'):
+#         if request.method == 'POST':
+#             subject = request.POST['subject']
+#             cursor = connection.cursor()
+#             cursor.execute('exec updateSubject %s,%s',[id,subject])
+#             cursor.close()
+#             return redirect('/subject')
+
+#         cursor = connection.cursor()
+#         cursor.execute('EXEC GetSubject_byID %s', [id])
+#         subject = cursor.fetchone()
+#         cursor.close()
+
+#         context = {
+#             'subject': subject
+#         }
+
+#         return render(request, 'dashboard/subject.html', context)
+#     return redirect('login')
+
 def edit_subject(request, id):
     if request.session.get('user_authenticated'):
         if request.method == 'POST':
             subject = request.POST['subject']
             cursor = connection.cursor()
-            cursor.execute('exec updateSubject %s,%s',[id,subject])
-            cursor.close()
-            return redirect('/subject')
+            cursor.execute("SELECT subject FROM tb_subject")
+            subject_all = cursor.fetchall()
+            subject_list = [item[0] for item in subject_all]
+            print(subject_list)
+            if subject in subject_list:
+                #want to give alert 
+                return redirect('/subject')
+
+            else:
+                cursor.execute('exec updateSubject %s,%s',[id,subject])
+                cursor.close()
+                return redirect('/subject')
 
         cursor = connection.cursor()
         cursor.execute('EXEC GetSubject_byID %s', [id])
@@ -649,6 +705,7 @@ def edit_subject(request, id):
 
         return render(request, 'dashboard/subject.html', context)
     return redirect('login')
+
 
 def activateSubject(request, id):
     if request.session.get('user_authenticated'):
@@ -770,6 +827,34 @@ def activate_skill(request,id):
             cursor.close()
     return redirect('login')
         
+# def create_Skill(request):
+#     if request.session.get('user_authenticated'):
+#         cursor = connection.cursor()
+#         cursor.execute('exec GetJobposition')
+#         jobs = cursor.fetchall()
+#         cursor = connection.cursor()
+#         cursor.execute('exec get_subjectData')
+#         subjects = cursor.fetchall()
+#         if request.method == "POST":  
+#             AppliedFor = request.POST.get('applied_for')
+#             Subject_ID = request.POST.get('subject')
+#             Level = request.POST.get('level')
+#             No_of_Question = request.POST.get('num_of_questions')
+#             CutOffMarks = request.POST.get('cutoff_marks')
+#             Duration = request.POST.get('duration')
+#             IsMandatory = request.POST.get('subject_type')
+#             OptionalGroupName=request.POST.get('subject-type')
+#             print(Subject_ID)
+#             try:
+#                 cursor = connection.cursor()
+#                 cursor.execute('exec insertSubjectlevel %s,%s,%s,%s,%s,%s,%s,%s',[AppliedFor,Subject_ID,Level,No_of_Question,CutOffMarks,Duration,IsMandatory,OptionalGroupName])
+#                 return redirect('/skill_set_config')  
+#             finally:
+#                 cursor.close()
+#         return render(request, 'dashboard/new_subject_config.html',{'jobs':jobs,'subjects':subjects})
+#     return redirect('login')
+
+
 def create_Skill(request):
     if request.session.get('user_authenticated'):
         cursor = connection.cursor()
@@ -787,15 +872,22 @@ def create_Skill(request):
             Duration = request.POST.get('duration')
             IsMandatory = request.POST.get('subject_type')
             OptionalGroupName=request.POST.get('subject-type')
-            print(Subject_ID)
+            print('final  : ',Subject_ID,AppliedFor,Level)
+
             try:
                 cursor = connection.cursor()
-                cursor.execute('exec insertSubjectlevel %s,%s,%s,%s,%s,%s,%s,%s',[AppliedFor,Subject_ID,Level,No_of_Question,CutOffMarks,Duration,IsMandatory,OptionalGroupName])
-                return redirect('/skill_set_config')  
+                cursor.execute("exec get_skill_present_or_not %s,%s,%s",[Subject_ID,AppliedFor,Level])
+                skill_presnet = cursor.fetchall()
+                if len(skill_presnet) == 1:
+                    return render(request, 'dashboard/new_subject_config.html',{'jobs':jobs,'subjects':subjects,'error': 'This subject already exists'})
+                else:
+                    cursor.execute('exec insertSubjectlevel %s,%s,%s,%s,%s,%s,%s,%s',[AppliedFor,Subject_ID,Level,No_of_Question,CutOffMarks,Duration,IsMandatory,OptionalGroupName])
+                    return redirect('/skill_set_config') 
             finally:
                 cursor.close()
         return render(request, 'dashboard/new_subject_config.html',{'jobs':jobs,'subjects':subjects})
     return redirect('login')
+
           
 
 def quest_bank(request):
