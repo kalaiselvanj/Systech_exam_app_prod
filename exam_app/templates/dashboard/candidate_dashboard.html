@@ -14,15 +14,17 @@
 
   <style type="text/css">
 
-    body
-    {
-        counter-reset: Serial;           /* Set the Serial counter to 0 */
+    /* Adjust the size of the icon */
+    .fa-lg {
+      font-size: 34px; /* You can change this value to increase or decrease the size */
     }
-    tr td:first-child:before
-    {
-      counter-increment: Serial;      /* Increment the Serial counter */
-      content: counter(Serial); /* Display the counter */
+
+    /* Add space before the icon */
+    .excel-link {
+      margin-left: 50px; /* You can change this value to adjust the spacing */
+      margin-top: 7px;
     }
+    
     a:link {
       text-decoration: none;
     }
@@ -278,6 +280,7 @@
       border: none;
       background-color: #f5f5f5;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
       padding: 10px;
       color: #444;
       font-size: 14px;
@@ -514,7 +517,10 @@ input[type="date"]:focus {
                 <input type="text" id="search-bar" style="height: 40px; margin-left: 40px;" name="search-bar" placeholder="Search..." class="mr-2">
                 <button type="submit" class="btn btn-primary" style="height: 40px;"><i class="fa fa-search"></i></button>
                 <!-- Add spacing between the search button and the Excel icon -->
-                <a href="{% url 'generate_excel' %}" class="ml-2"><i class="fas fa-file-excel"></i></a>
+                <!-- Add a custom CSS class to the link and icon -->
+                <a href="{% url 'generate_excel' %}" class="ml-2 excel-link">
+                  <i class="fas fa-file-excel fa-lg"></i>
+                </a>
               </div>
             </div>
             
@@ -588,11 +594,7 @@ input[type="date"]:focus {
             </div>
             
           </div>
-          
-          
-          
-          
-            
+                      
 
   <script>
     
@@ -606,17 +608,25 @@ input[type="date"]:focus {
     
       function showPage(page) {
         currentPage = page;
-    
+      
         var start = (currentPage - 1) * pageSize;
         var end = start + pageSize;
-    
-        rows.forEach(function(row, index) {
-          row.style.display = (index >= start && index < end) ? '' : 'none';
+      
+        rows.forEach(function (row, index) {
+          if (index >= start && index < end) {
+            // Calculate the continuous serial number for each row
+            var serialNumber = index + 1;
+            row.querySelector('td:first-child').textContent = serialNumber;
+      
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
         });
-    
+      
         updatePageNumbers();
       }
-    
+      
       function updatePageNumbers() {
         var pageNumbers = document.getElementById('pageNumbers');
         pageNumbers.textContent = currentPage + ' / ' + totalPages;

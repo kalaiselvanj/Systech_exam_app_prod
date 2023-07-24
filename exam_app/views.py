@@ -1212,7 +1212,7 @@ def detect_face(request):
             image = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
             # Provide your Azure Storage connection string and container name
-            connection_string = "DefaultEndpointsProtocol=https;AccountName=systech;AccountKey=wybwOv3a45h4BE+pih3z92Ba4ZwjYfVFtuBSB97yJvnk0zGiDY8TSd6avtWlJqOEz01RNP6RMG08+AStdg5ftg==;EndpointSuffix=core.windows.net"
+            connection_string = "DefaultEndpointsProtocol=https;AccountName=systechstorage;AccountKey=XAc6NuwgzYj80yUSn29KeofUHMWwUU09DGp18Fb9ZMMt6aD0i68X1EYxq3QhHnH/T5my81gbrY9C+ASt5XTySg==;EndpointSuffix=core.windows.net"
             container_name = user_id
 
             # Call the function to create or get the blob container

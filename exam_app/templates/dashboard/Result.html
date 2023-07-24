@@ -1,13 +1,6 @@
 {% extends 'base.html' %} {% load static%} {% block content %}
-<head>  <style>   body
-  {
-      counter-reset: Serial;           /* Set the Serial counter to 0 */
-  }
-  tr td:first-child:before
-  {
-    counter-increment: Serial;      /* Increment the Serial counter */
-    content: counter(Serial); /* Display the counter */
-  }
+<head>  <style> 
+  
   .sticky-thead {
     position: sticky;
     top:-1px;
@@ -387,17 +380,25 @@ input[type="date"]:focus {
   
     function showPage(page) {
       currentPage = page;
-  
+    
       var start = (currentPage - 1) * pageSize;
       var end = start + pageSize;
-  
-      rows.forEach(function(row, index) {
-        row.style.display = (index >= start && index < end) ? '' : 'none';
+    
+      rows.forEach(function (row, index) {
+        if (index >= start && index < end) {
+          // Calculate the continuous serial number for each row
+          var serialNumber = index + 1;
+          row.querySelector('td:first-child').textContent = serialNumber;
+    
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
       });
-  
+    
       updatePageNumbers();
     }
-  
+    
     function updatePageNumbers() {
       var pageNumbers = document.getElementById('pageNumbers');
       pageNumbers.textContent = currentPage + ' / ' + totalPages;
@@ -422,6 +423,7 @@ input[type="date"]:focus {
   }
 
   paginateTable(5); // Change the page size as needed
+// Change the page size as needed
 
 </script>
 {% endblock %}
