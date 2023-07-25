@@ -16,15 +16,23 @@
 
     /* Adjust the size of the icon */
     .fa-lg {
-      font-size: 34px; /* You can change this value to increase or decrease the size */
+      font-size: 40px; /* You can change this value to increase or decrease the size */
     }
 
     /* Add space before the icon */
     .excel-link {
       margin-left: 50px; /* You can change this value to adjust the spacing */
-      margin-top: 7px;
+      margin-top: 2px;
+      color: #1abc9c;
+      {% comment %} box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); {% endcomment %}
+      
     }
     
+    .excel-link:hover {
+      color: #1abc9c;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
     a:link {
       text-decoration: none;
     }
@@ -514,7 +522,7 @@ input[type="date"]:focus {
           <div class="row justify-content-between align-items-center mt-3">
             <div class="col-md-6 d-flex justify-content-start align-items-center justify-content-start">
               <div class="d-flex align-items-center justify-content-start">
-                <input type="text" id="search-bar" style="height: 40px; margin-left: 40px;" name="search-bar" placeholder="Search..." class="mr-2">
+                <input type="text" id="search-bar" style="height: 40px; margin-left: 5px;" name="search-bar" placeholder="Search..." class="mr-2">
                 <button type="submit" class="btn btn-primary" style="height: 40px;"><i class="fa fa-search"></i></button>
                 <!-- Add spacing between the search button and the Excel icon -->
                 <!-- Add a custom CSS class to the link and icon -->
@@ -540,118 +548,129 @@ input[type="date"]:focus {
           
         
    
-          <div class="table-responsive" style="height: 70vh; overflow-y: auto; overflow-x: auto; margin-top: 20px;">
-            <table class="table table-bordered text-center">
-              <thead class="sticky-thead">
-                <tr>
-                  <th>S.No</th>
-                  <th>Candidate Name</th>
-                  <th>User ID</th>
-                  <th>Password</th>
-                  <th>Applied for</th>
-                  <th>Applied Date</th>
-                  {% comment %} <th>Start Time</th>
-                  <th>End Time</th>
-                  <th>Remaining Time</th> {% endcomment %}
-                  <th>Unlock <input type="checkbox" id="select-all-unlock"></th>
-                  <th>Skip Level 1 <input type="checkbox" id="select-all-skip-level-1"></th>
-                </tr>
-              </thead>
-              <tbody id="tableBody">
-                {% for candidate in candidate_data %}
-                <tr>
-                  <td></td>
-                  <td  style="text-align: left;"><a href="{% url 'show_candidate_data' id=candidate.0 %}">{{ candidate.3 }}</a></td>
-                  <td  style="text-align: left;">{{ candidate.4 }}</td>
-                  <td>{{ candidate.5 }}</td>
-                  <td  style="text-align: left;">{{ candidate.6 }}</td>
-                  <td>{{ candidate.7 }}</td>
-                  {% comment %} <td>{{ candidate.7 }}</td>
-                  <td>{{ candidate.8 }}</td>
-                  <td>{{ candidate.9 }}</td> {% endcomment %}
-                  {% if not candidate.11 %}
-                  <td><input type="checkbox" class="row-checkbox" name="unlock" value="{{ candidate.0 }}"></td>
-                  {% else %}
-                  <td><img src="{% static 'icons/check-circle-fill.svg' %}" alt="Icon" /></td>
-                  {% endif %}
-                  {% if not candidate.12 %}
-                  <td><input type="checkbox" class="row-checkbox" name="skip_level_1" value="{{ candidate.0 }}"></td>
-                  {% else %}
-                  <td><img src="{% static 'icons/check-circle-fill.svg' %}" alt="Icon" /></td>
-                  {% endif %}
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="10">No candidates found.</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-            <div id="pagination">
-              <button id="prevBtn">&lt; Prev</button>
-              <span id="pageNumbers"></span>
-              <button id="nextBtn">Next &gt;</button>
-            </div>
-            
-          </div>
+          
+<div class="table-responsive" style="height: 70vh; overflow-y: auto; overflow-x: auto; margin-top: 20px;">
+  <table class="table table-bordered text-center">
+    <thead class="sticky-thead">
+      <tr>
+        <th>S.No</th>
+        <th>Candidate Name</th>
+        <th>User ID</th>
+        <th>Password</th>
+        <th>Applied for</th>
+        <th>Applied Date</th>
+        <!-- Other header columns (if any) -->
+        <th>Unlock <input type="checkbox" id="select-all-unlock"></th>
+        <th>Skip Level 1 <input type="checkbox" id="select-all-skip-level-1"></th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      {% if candidate_data %}
+        {% for candidate in candidate_data %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td style="text-align: left;"><a href="{% url 'show_candidate_data' id=candidate.0 %}">{{ candidate.3 }}</a></td>
+          <td style="text-align: left;">{{ candidate.4 }}</td>
+          <td>{{ candidate.5 }}</td>
+          <td style="text-align: left;">{{ candidate.6 }}</td>
+          <td>{{ candidate.7 }}</td>
+          <!-- Other data columns (if any) -->
+          <td>
+            {% if not candidate.11 %}
+            <input type="checkbox" class="row-checkbox" name="unlock" value="{{ candidate.0 }}">
+            {% else %}
+            <img src="{% static 'icons/check-circle-fill.svg' %}" alt="Icon" />
+            {% endif %}
+          </td>
+          <td>
+            {% if not candidate.12 %}
+            <input type="checkbox" class="row-checkbox" name="skip_level_1" value="{{ candidate.0 }}">
+            {% else %}
+            <img src="{% static 'icons/check-circle-fill.svg' %}" alt="Icon" />
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+      <tr>
+        <td colspan="8">No candidates found.</td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+  <div id="pagination">
+    <button id="prevBtn">&lt; Prev</button>
+    <span id="pageNumbers"></span>
+    <button id="nextBtn">Next &gt;</button>
+  </div>
+</div>
                       
 
   <script>
     
-    function paginateTable(pageSize) {
-      var table = document.querySelector('.table');
-      var tbody = table.querySelector('tbody');
-      var rows = Array.from(tbody.querySelectorAll('tr'));
-    
-      var currentPage = 1;
-      var totalPages = Math.ceil(rows.length / pageSize);
-    
-      function showPage(page) {
-        currentPage = page;
-      
-        var start = (currentPage - 1) * pageSize;
-        var end = start + pageSize;
-      
-        rows.forEach(function (row, index) {
-          if (index >= start && index < end) {
-            // Calculate the continuous serial number for each row
-            var serialNumber = index + 1;
-            row.querySelector('td:first-child').textContent = serialNumber;
-      
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
-          }
-        });
-      
-        updatePageNumbers();
-      }
-      
-      function updatePageNumbers() {
-        var pageNumbers = document.getElementById('pageNumbers');
-        pageNumbers.textContent = currentPage + ' / ' + totalPages;
-      }
-    
-      function goToPrevPage() {
-        if (currentPage > 1) {
-          showPage(currentPage - 1);
+   function paginateTable(pageSize) {
+    var table = document.querySelector('.table');
+    var tbody = table.querySelector('tbody');
+    var rows = Array.from(tbody.querySelectorAll('tr'));
+
+    var currentPage = 1;
+    var totalPages = Math.ceil(rows.length / pageSize);
+
+    function showPage(page) {
+      currentPage = page;
+      var start = (currentPage - 1) * pageSize;
+      var end = start + pageSize;
+
+      rows.forEach(function (row, index) {
+        if (index >= start && index < end) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
         }
+      });
+
+      updatePageNumbers();
+    }
+
+    function updatePageNumbers() {
+      var pageNumbers = document.getElementById('pageNumbers');
+      pageNumbers.textContent = currentPage + ' / ' + totalPages;
+    }
+
+    function goToPrevPage() {
+      if (currentPage > 1) {
+        showPage(currentPage - 1);
       }
-    
-      function goToNextPage() {
-        if (currentPage < totalPages) {
-          showPage(currentPage + 1);
-        }
+    }
+
+    function goToNextPage() {
+      if (currentPage < totalPages) {
+        showPage(currentPage + 1);
       }
-    
-      document.getElementById('prevBtn').addEventListener('click', goToPrevPage);
-      document.getElementById('nextBtn').addEventListener('click', goToNextPage);
-    
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', goToPrevPage);
+    document.getElementById('nextBtn').addEventListener('click', goToNextPage);
+
+    // Initial check for empty table
+    if (rows.length === 0) {
+      var tableBody = document.getElementById('tableBody');
+      var emptyRow = document.createElement('tr');
+      var emptyData = document.createElement('td');
+      emptyData.setAttribute('colspan', '8');
+      emptyData.textContent = 'No candidates found.';
+      emptyRow.appendChild(emptyData);
+      tableBody.appendChild(emptyRow);
+
+      // Hide the pagination controls if the table is empty
+      var paginationDiv = document.getElementById('pagination');
+      paginationDiv.style.display = 'none';
+    } else {
       showPage(1);
     }
-  
-    paginateTable(5); // Change the page size as needed
-  
+  }
+
+  paginateTable(5); // Change the page size as needed
     
     function getCookie(name) {
       var cookieValue = null;
