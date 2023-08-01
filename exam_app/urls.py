@@ -29,6 +29,7 @@ urlpatterns = [
     path('result/', views.result, name='result'),
     path('resultsdetail/<int:id>/<str:level>/',views.resultsdetail,name='resultsdetail'),
     path('registration/', views.registration, name='registration'),
+    path('registersucess/',views.registersucess,name='registersucess'),
     path('alert_page_exam/',views.alert_page_exam,name="alert_page_exam"), 
     path('introcheckpage/',views.introcheckpage,name="introcheckpage"),
     path('exam_portal',views.exam_portal,name="index"),

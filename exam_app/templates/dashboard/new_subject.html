@@ -136,25 +136,42 @@
   
 <div class="container">
   <div class="col-12 mt-2 dashboard-header">
-    <h2 class=" my-4 dashboard-title" >New Subject</h2>
+    <h2 class=" my-4 dashboard-title" >New Skill</h2>
   </div>
   
   <div class="card">
     <div class="card-body">
-      <h5>Subject</h5>
-      <form method="POST">
+      <h5>Skill</h5>
+      <form method="POST" onsubmit="return validateForm()">
         {% csrf_token %}
-        <input type="text" name="subject" placeholder="Enter the Subject" required><br>
-
+        <input type="text" name="subject" id="subject" placeholder="Enter the Skill" required><br>
+        <span class="error-message" style="color: red; display: none;">Please enter a skill.</span>
+    
         <div class="d-flex flex-row justify-content-between box-container mt-5" style="width: 50%;">
-          <button type="submit" class="btn btn-primary">Create Subject</button>
-          <a href="{% url 'subject' %}" class="btn btn-secondary">May Be Later</a>
+            <button type="submit" class="btn btn-primary">Create Skill</button>
+            <a href="{% url 'subject' %}" class="btn btn-secondary">Cancel</a>
         </div>
-      </form>
+    </form>
+    
     </div>
   </div>
 </div>
 
 </body>
+<script>
+  function validateForm() {
+      const skillInput = document.getElementById('subject');
+      const errorMessage = document.querySelector('.error-message');
+
+      if (skillInput.value.trim() === '') {
+          errorMessage.style.display = 'inline';
+          return false; // Prevent form submission
+      } else {
+          errorMessage.style.display = 'none';
+          return true; // Allow form submission
+      }
+  }
+</script>
+
 </html>
 {% endblock content %}

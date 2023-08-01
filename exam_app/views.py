@@ -228,7 +228,7 @@ def registration(request):
             cursor = connection.cursor()
             cursor.execute('exec insertregistrationdata %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s' ,[Applyingfor,firstname,lastname,gender,dob,MaritalStatus,phone,email,CAddress,PAddress,Institution10,CGPA10,YOP10,Institution12,CGPA12,YOP12,Branch12,Graduation,UGCollege,UGDiscipline,CGPAUG,YOPUG,PGraduation,PGDiscipline,PGCollege,CGPAPG,YOPPG,Source,Referredthrough,Applied,Adate,countrycode,Id_proof,ID_NO,iddata,facedata,new_id,current_date])
             # return render(request, 'registration/login.html')
-            return redirect('login')
+            return redirect('registersucess')
 
 
         finally:
@@ -246,6 +246,9 @@ def registration(request):
     years = [year for year in range(1990, current_year+1)]
     context = {'countries': countries,'ug':ug,'pg':pg,'branch':branch,'jobs':jobs,'years':years}
     return render(request, 'registration/registration.html',context)  
+
+def registersucess(request):
+    return render(request,'registration/registersucess.html')
 
 @csrf_exempt
 def capture_card(request):
@@ -574,7 +577,8 @@ def add_new_job_positions(request):
                 cursor = connection.cursor()
                 cursor.execute("SELECT job_position FROM tb_jobposition")
                 jobs_all = cursor.fetchall()
-                job_list = [item[0] for item in jobs_all]
+                job_list = [item[0].lower() for item in jobs_all]
+                job_position = job_position.strip().lower()
                 print(job_list)
                 if job_position in job_list:
                     return render(request, 'dashboard/add_new_job_positions.html', {'errors': 'This Job already exists'})
@@ -735,12 +739,12 @@ def subject(request):
 def new_subject(request):
     if request.session.get('user_authenticated'):
         if request.method == "POST":
-            subject = request.POST.get('subject')
+            subject = request.POST.get('subject').strip().lower()
             try:
                 cursor = connection.cursor()
                 cursor.execute("SELECT subject FROM tb_subject")
                 subject_all = cursor.fetchall()
-                subject_list = [item[0] for item in subject_all]
+                subject_list = [item[0].lower() for item in subject_all]
                 print(subject_list)
                 if subject in subject_list:
                     return render(request, 'dashboard/new_subject.html', {'errors': 'This subject already exists'})
@@ -879,7 +883,7 @@ def create_Skill(request):
                 cursor.execute("exec get_skill_present_or_not %s,%s,%s",[Subject_ID,AppliedFor,Level])
                 skill_presnet = cursor.fetchall()
                 if len(skill_presnet) == 1:
-                    return render(request, 'dashboard/new_subject_config.html',{'jobs':jobs,'subjects':subjects,'error': 'This subject already exists'})
+                    return render(request, 'dashboard/new_subject_config.html',{'jobs':jobs,'subjects':subjects,'error': 'This Skill Set already exists'})
                 else:
                     cursor.execute('exec insertSubjectlevel %s,%s,%s,%s,%s,%s,%s,%s',[AppliedFor,Subject_ID,Level,No_of_Question,CutOffMarks,Duration,IsMandatory,OptionalGroupName])
                     return redirect('/skill_set_config') 

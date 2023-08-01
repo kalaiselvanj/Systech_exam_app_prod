@@ -62,7 +62,8 @@
         {% for key,value in questions.items %}
         <button class="tablinks" onclick="openTab(event, '{{key}}')" {% if forloop.first %}id="defaultOpen"{% endif %}>{{key}}</button>
         {% endfor %}
-        <button id="demo"></button>
+        <button id="timer"></button>
+        <!-- <div id="timer"></div> -->
     </div>
     
     
@@ -209,7 +210,7 @@
     openTab(evt, tabName, nextQuestionIndex);
   });
 </script>
-<script>
+<!-- <script>
   //countdown timer
 var countdownEl = document.getElementById('countdown');
 var totalDuration = countdownEl.dataset.totalDuration;
@@ -243,11 +244,11 @@ var x = setInterval(function() {
     window.location.href = "{% url 'submission' %}?level={{level}}&applied_for={{appliedfor}}&user={{user_id}}";
   }
 }, 1000);
-</script>
+</script> -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   {% csrf_token %}
   <script>
-    {% comment %} window.onbeforeunload = function () {return false;} {% endcomment %}
+
     function submitAnswer(answerValue) {
       var formData = {};
       var radios = document.querySelectorAll("input[type=radio]");
@@ -404,7 +405,84 @@ error: function(xhr, status, error) {
 
 </script>
 
+<script>
+  let intervalId; // Declare intervalId outside the countdown function
+  // Function to start or resume the countdown timer
+  function startTimer() {
+    let endTime = sessionStorage.getItem('countdownEndTime');
+    if (endTime) {
+      // If an endTime value exists in session storage, resume the countdown from that value
+      const remainingTime = endTime// Ensure countdown doesn't go below zero
+      countdown(remainingTime);
+    } else {
+      var countdownEl =document.getElementById('countdown');
+      var totalDurationInMinutes = countdownEl.dataset.totalDuration;
+      
+      var countDownDate = (totalDurationInMinutes *60*1000);
+      console.log(countDownDate)
+      // If no endTime value exists, start a new countdown from the calculated countDownDate
+      countdown(countDownDate);
+    }
+  }
 
+  // Function to stop the countdown timer
+  function stopTimer() {
+    clearInterval(intervalId); // Stop the interval to pause the countdown
+  }
+
+  // Function to reset the countdown timer
+  function resetTimer() {
+    stopTimer(); // Stop the interval
+    sessionStorage.removeItem('countdownEndTime'); // Clear the endTime value from session storage
+    document.getElementById('timer').textContent = '00:00:00'; // Reset the displayed time to 00:00:00
+  }
+
+  // Function to handle the countdown
+  function countdown(remainingTime) {
+    const timerDisplay = document.getElementById('timer');
+
+    function formatTime(hours, minutes, seconds) {
+      if (hours > 0) {
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      } else {
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }
+    }
+
+    function tick() {
+      if (remainingTime <= 0) {
+        // If the countdown is completed, stop the interval and display 00:00:00
+        stopTimer();
+        timerDisplay.textContent = formatTime(0, 0, 0);
+        sessionStorage.removeItem('countdownEndTime'); // Clear the endTime value from session storage
+        alert("Your time is up. Please submit your answers.");
+        window.location.href = "{% url 'submission' %}?level={{level}}&applied_for={{appliedfor}}&user={{user_id}}";
+      } else {
+          console.log("remainingTime",remainingTime)
+          // Calculate hours, minutes, and seconds from the remaining time
+          const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+          // Display the time in the appropriate format based on the duration
+          timerDisplay.textContent = formatTime(hours, minutes, seconds);
+
+          // Store the remaining time in session storage just before the page is unloaded
+          window.addEventListener('beforeunload', () => {
+            sessionStorage.setItem('countdownEndTime', remainingTime);
+        });
+      }
+      remainingTime -= 1000;
+    }
+
+    // Call the tick function immediately
+    tick();
+    intervalId = setInterval(tick, 1000); // Assign intervalId to the setInterval instance
+  }
+
+  // Automatically start the timer when the page loads
+  startTimer();
+</script>
 
 {% endblock scripts %} 
 {% endblock body %}

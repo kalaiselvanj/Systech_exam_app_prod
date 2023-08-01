@@ -508,7 +508,7 @@ input[type="date"]:focus {
             </div>
                   
             <div class="col-md-6 col-card-5 d-flex justify-content-end align-items-center">
-              <label for="applied_for" class="mr-2">Applied for:</label>
+              <label for="applied_for" class="mr-2">Job Position:</label>
               <select class="form-control" style="width:300px" id="applied_for" name="applied_for" onchange="this.form.submit()">
                 <option value='All' {% if request.GET.applied_for == 'All' %}selected{% endif %}>All</option>
                 {% for search in search_filter %}
@@ -557,7 +557,7 @@ input[type="date"]:focus {
         <th>Candidate Name</th>
         <th>User ID</th>
         <th>Password</th>
-        <th>Applied for</th>
+        <th>Job Position</th>
         <th>Applied Date</th>
         <!-- Other header columns (if any) -->
         <th>Unlock <input type="checkbox" id="select-all-unlock"></th>
