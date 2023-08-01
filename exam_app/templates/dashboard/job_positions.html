@@ -216,7 +216,8 @@
       <a href="{% url 'add_new_job_positions' %}" class="btn btn-primary">Add New Job Position</a>
     </div>
     <div class="col-md-5"  >
-      <form method="GET" class="d-flex flex-row justify-content-end" >
+      <form method="GET" class="d-flex flex-row justify-content-end align-items-center" >
+        <label  class="mr-1">Status:</label>
         <select class="form-control w-50" style="margin-right:5% " id="filter_by" name="filter_by" onchange="this.form.submit()">
           <option value="1" {% if request.GET.filter_by == '1' %}selected{% endif %}>Active</option>
           <option value="2" {% if request.GET.filter_by == '2' %}selected{% endif %}>All</option>
@@ -267,22 +268,25 @@
                   </div>
                   <div class="modal-body">
                     <form method="POST" action="{% url 'edit_job_pos' id=job.0 %}">
-                      {% csrf_token %}`
-                      <div class="mb-3">
+                      {% csrf_token %}
+                      <div class="mb-3 d-flex flex-column align-items-center">
                         <label for="job_position" class="form-label">Job Position</label>
-                        <input type="text" class="form-control" id="jobpos" name="job_position" value="{{job.1}}">
+                        <input type="text" class="form-control" id="jobpos" name="job_position" value="{{job.1}}" disabled>
                       </div>
-                      <div class="mb-3">
+                      <div class="mb-3 d-flex flex-column align-items-center">
                         <label for="is_option_req" class="form-label">Is Non CS</label>
                         <input type="text" class="form-control" id="is_non_cs" name="is_option_req" value="{{job.2}}">
                       </div>
-                      <div class="mb-3">
+                      <div class="mb-3 d-flex flex-column align-items-center">
                         <label for="is_bond_req" class="form-label">Is Bond Required</label>
                         <input type="text" class="form-control" id="is_bond_req" name="is_bond_req" value="{{job.3}}">
                       </div>
-                      <button type="submit" class="btn btn-primary">Save changes</button>
+                      <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                      </div>
                     </form>
                   </div>
+                  
                 </div>
               </div>
             </div>

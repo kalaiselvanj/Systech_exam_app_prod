@@ -218,7 +218,8 @@
       <a href="{% url 'new_subject' %}" class="btn btn-primary">Add New Skill</a>
     </div>
     <div class="col-md-5">
-      <form method="GET" class="d-flex flex-row justify-content-end">
+      <form method="GET" class="d-flex flex-row justify-content-end  align-items-center">
+        <label  style="margin-right:30px;">Status:</label>
         <select class="form-control w-50"style="margin-right:5%" id="filter_by" name="filter_by" onchange="this.form.submit()">
           <option value="1" {% if request.GET.filter_by == '1' %}selected{% endif %}>Active</option>
           <option value="2" {% if request.GET.filter_by == '2' %}selected{% endif %}>All</option>
@@ -256,7 +257,7 @@
                     <div
                       class="d-flex justify-content-between align-items-center w-100"
                     >
-                      <h5 class="modal-title mb-0">Edit Skill</h5>
+                      <h5 class="modal-title mb-0">Edit Subject</h5>
                     </div>
                     <div class="">
                       <button
@@ -270,8 +271,8 @@
                   <div class="modal-body">
                     <form method="POST" action="{% url 'edit_subject' id=subject.0 %}">
                       {% csrf_token %}
-                      <div class="mb-3">
-                        <label for="subject" class="form-label">Skill</label>
+                      <div class="mb-3 d-flex flex-column align-items-center">
+                        <label for="subject" class="form-label">Subject</label>
                         <input type="text" class="form-control" id="subject" name="subject" value="{{subject.1}}">
                       </div>
                       <button type="submit" class="btn btn-primary">Save changes</button>

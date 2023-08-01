@@ -578,9 +578,9 @@ def add_new_job_positions(request):
                 cursor.execute("SELECT job_position FROM tb_jobposition")
                 jobs_all = cursor.fetchall()
                 job_list = [item[0].lower() for item in jobs_all]
-                job_position = job_position.strip().lower()
+                job_positions = job_position.strip().lower()
                 print(job_list)
-                if job_position in job_list:
+                if job_positions in job_list:
                     return render(request, 'dashboard/add_new_job_positions.html', {'errors': 'This Job already exists'})
                 else:
                     cursor.execute('exec InsertJobpositions %s, %s, %s',[job_position,isoptionrequired,isbondrequired])
