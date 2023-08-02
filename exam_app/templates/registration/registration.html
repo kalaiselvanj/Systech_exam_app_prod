@@ -536,7 +536,7 @@
                                 <input type="text" name="Referredthrough" id="Referredthrough" placeholder="Name (or) Emp-Id" maxlength="200" required> 
                             </div>
                             <div class="col-md-3">
-                                <label class="input-label mt-0" name="Applied"> Is Applied?<span style="color:red">*</span> 
+                                <label class="input-label mt-0" name="Applied"> Previously Applied?<span style="color:red">*</span> 
                                 </label>    
                                 <div>
                                     <select  name="Applied" id="Applied" required >
@@ -643,6 +643,7 @@
         idNoLabel.textContent = "PAN CARD Number";
         idNoInput.placeholder = "ABCDE1234A";
         idNoInput.pattern = "^[A-Z]{5}[0-9]{4}[A-Z]{1}$";
+        idNoInput.type = "text";
         break;
 
         case "AADHAR":
@@ -656,12 +657,14 @@
         idNoLabel.textContent = "Driving License Number";
         idNoInput.placeholder = "AP0123456789111";
         idNoInput.pattern = "^[A-Z]{2}-[0-9]{13}$";
+        idNoInput.type = "text";
         break;
 
         case "PASSPORT":
         idNoLabel.textContent = "Passport Number";
         idNoInput.placeholder = "A1234567";
         idNoInput.pattern = "^[A-Z]{1}[0-9]{7}$";
+        idNoInput.type = "text";
         break;
 
         default:

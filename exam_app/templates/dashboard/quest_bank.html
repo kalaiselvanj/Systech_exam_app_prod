@@ -217,6 +217,32 @@
       border-radius: 3px;
     }
 
+    /* Set the width of the scrollbar */
+/* Use 'thin' or 'auto' to let the browser determine the width, or specify a specific width value */
+/* Example: scrollbar-width: 6px; */
+/* Note: Not all browsers support the scrollbar-width property yet */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Webkit-based browsers (e.g., Chrome, Safari) */
+  scrollbar-width: thin; /* Firefox */
+}
+
+/* Set the color of the scrollbar thumb */
+/* Example: scrollbar-color: red blue; */
+/* The first color is for the thumb, the second color is for the track */
+/* Note: Not all browsers support the scrollbar-color property yet */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #2c3e50;
+  border-radius: 3px;
+}
+
+/* Set the color of the scrollbar track */
+/* Note: Not all browsers support the scrollbar-color property yet */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+
     #pagination {
       display: flex;
       justify-content: center;
@@ -298,7 +324,7 @@
       </div>
     </form>     
   <div style="height: 55vh; overflow-y: auto; margin:20px; overflow:auto">
-    <table class="table table-bordered text-center">
+    <table class="table table-bordered text-center custom-scrollbar">
       <thead class="sticky-thead">
         <tr>
           <th>S.NO</th>

@@ -38,15 +38,14 @@ from django.core.mail import send_mail
 
 # Create your views here.
 
-def send_email_view(request):
-    subject = 'Test Email-2 from Django'
-    message = 'This is a test email sent from Django. your id is 20230802001'
-    from_email = 'kalaiselvanj@systechusa.com'  # Replace with your Gmail address
-    recipient_list = ['santoshy@systechusa.com','cimplysantosh@gmail.com']  # Replace with recipient email addresses
+# def send_email_view(request):
+#     subject = 'Test Email-2 from Django'
+#     message = 'This is a test email sent from Django. your id is 20230802001'
+#     from_email = 'kalaiselvanj@systechusa.com'  # Replace with your Gmail address
+#     recipient_list = ['santoshy@systechusa.com','cimplysantosh@gmail.com']  # Replace with recipient email addresses
 
-    send_mail(subject, message, from_email, recipient_list)
-    return HttpResponse("mail sent successfully")
-
+#     send_mail(subject, message, from_email, recipient_list)
+#     return HttpResponse("mail sent successfully")
 
 
 # def login(request):
@@ -73,19 +72,18 @@ def send_email_view(request):
 #                     request.session['email'] = email                  
 #                     request.session['user_authenticated'] = True                    
 #                     return redirect('dashboard')
-                
-#                 # If the user is valid but password is incorrect                
+                              
 #                 elif user[3] == password and user[4] == False:
 #                     user_name = user[5]
 #                     email = user[2]
 #                     request.session['username'] = user_name  
 #                     request.session['email'] = email                    
-#                     request.session['user_authenticated'] = True                   
+#                     request.session['user_authenticated'] = True                    
 #                     return redirect('/introcheckpage')
                 
-#                 # If the user is valid but not yet activated                
+                             
 #                 elif user[3] != password:
-#                     return render(request, 'registration/login.html', {'error': 'Invalid Password'})
+#                     return render(request, 'registration/login.html', {'perror': 'Invalid Password'})
                 
 #             # If the user is invalid    
 #             elif user == None:
@@ -99,21 +97,14 @@ def send_email_view(request):
 
 def login(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        login = request.POST['username']
         password = request.POST['password']
         try:
             cursor = connection.cursor()
-            cursor.execute('EXEC check_valid_email @username=%s', [username])
+            cursor.execute('EXEC check_valid_id %s', [login])
             user = cursor.fetchone()
 
-            # If the user was not found by username, try to find by email address     
-                   
-            if not user:
-                cursor.execute('EXEC check_valid_email @email=%s', [username])
-                user = cursor.fetchone()
-            print(user)
             if user:
-                # If the user is valid and password is correct                
                 if user[3] == password and user[4] == True:
                     user_name = user[5]
                     email = user[2]
@@ -121,7 +112,6 @@ def login(request):
                     request.session['email'] = email                  
                     request.session['user_authenticated'] = True                    
                     return redirect('dashboard')
-                              
                 elif user[3] == password and user[4] == False:
                     user_name = user[5]
                     email = user[2]
@@ -129,19 +119,14 @@ def login(request):
                     request.session['email'] = email                    
                     request.session['user_authenticated'] = True                    
                     return redirect('/introcheckpage')
-                
-                             
                 elif user[3] != password:
                     return render(request, 'registration/login.html', {'perror': 'Invalid Password'})
-                
-            # If the user is invalid    
             elif user == None:
-                return render(request, 'registration/login.html', {'errors': 'Invalid credentials'})        
+                return render(request, 'registration/login.html', {'errors': 'Invalid credentials'}) 
             else:
-                return render(request, 'registration/login.html', {'error': 'Invalid Email ID'})
+                return render(request, 'registration/login.html', {'error': 'Invalid Register ID'})
         finally:
             cursor.close()
-    # Render the login page    
     return render(request, 'registration/login.html')
 
 def registration(request):
@@ -959,9 +944,16 @@ def add_quest(request):
             option4 =  request.POST.get('option4')
             answer =  request.POST.get('answer')
             try:
+                
                 cursor = connection.cursor()
-                cursor.execute('exec insertQuestiondata %s,%s,%s,%s,%s,%s,%s,%s',[subject_id,level_id,question,option1,option2,option3,option4,answer])
-                return redirect('/quest_bank')  
+                cursor.execute('exec check_duplicate_quest %s',[question])
+                question_dup = cursor.fetchall()
+                print(question_dup)
+                if question_dup is None:
+                    cursor.execute('exec insertQuestiondata %s,%s,%s,%s,%s,%s,%s,%s',[subject_id,level_id,question,option1,option2,option3,option4,answer])
+                    return redirect('/quest_bank')
+                else:
+                    return render(request, 'dashboard/add_quest.html',{'error':'This question already exists'}) 
             finally:
                 cursor.close()
 

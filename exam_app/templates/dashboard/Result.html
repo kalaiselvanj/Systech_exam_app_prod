@@ -168,6 +168,32 @@
       background: #f0f0f0;
       border-radius: 3px;
     }
+
+    /* Set the width of the scrollbar */
+/* Use 'thin' or 'auto' to let the browser determine the width, or specify a specific width value */
+/* Example: scrollbar-width: 6px; */
+/* Note: Not all browsers support the scrollbar-width property yet */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Webkit-based browsers (e.g., Chrome, Safari) */
+  scrollbar-width: thin; /* Firefox */
+}
+
+/* Set the color of the scrollbar thumb */
+/* Example: scrollbar-color: red blue; */
+/* The first color is for the thumb, the second color is for the track */
+/* Note: Not all browsers support the scrollbar-color property yet */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #2c3e50;
+  border-radius: 3px;
+}
+
+/* Set the color of the scrollbar track */
+/* Note: Not all browsers support the scrollbar-color property yet */
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
     
     
 .headingtoday {
@@ -261,7 +287,7 @@ input[type="date"]:focus {
     <form method="GET">
         <div class="form-group row mb-3">
           <div class="col-md-4 col-card-5 d-flex align-items-center">
-            <label for="applied_for" class="me-3">Job Position:</label>
+            <label for="applied_for" class="me-2">Job Position:</label>
             <select class="form-control w-50 " id="applied_for" name="applied_for" onchange="this.form.submit()">
               <option value='ALL|0' {% if request.GET.applied_for == '0' %}selected{% endif %}>All</option>
               {% for search in search_filter %}
@@ -278,7 +304,7 @@ input[type="date"]:focus {
             </select>
           </div>
           <div class="col-sm-4 d-flex  align-items-center">
-            <label for="level" class="me-4">level:</label>
+            <label for="level" class="me-4">Level:</label>
             <select class="form-control w-50 me-2"  id="level" name="level" onchange="this.form.submit()">
               <option value="0" {% if request.GET.level == 'ALL' %}selected{% endif %} >All</option>
               <option value="1" {% if request.GET.level == '1' %}selected{% endif %}>1</option>
@@ -309,12 +335,12 @@ input[type="date"]:focus {
   </div>
 
   <div style="height: 60vh; overflow-y: auto; overflow-x: auto; margin-top:20px" >
-    <table class="table table-bordered text-center">
+    <table class="table table-bordered text-center custom-scrollbar">
       <thead class="sticky-thead">
         <tr>
           <th>S.No</th>
           <th>Candidate Name</th>
-          <th>Candidate id</th>
+          <th>Candidate ID</th>
           <th>Job Position</th>
           <th>Level</th>
           <th>Pass / Fail</th>
