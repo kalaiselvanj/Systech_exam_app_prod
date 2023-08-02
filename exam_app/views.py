@@ -228,7 +228,7 @@ def registration(request):
             cursor = connection.cursor()
             cursor.execute('exec insertregistrationdata %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s' ,[Applyingfor,firstname,lastname,gender,dob,MaritalStatus,phone,email,CAddress,PAddress,Institution10,CGPA10,YOP10,Institution12,CGPA12,YOP12,Branch12,Graduation,UGCollege,UGDiscipline,CGPAUG,YOPUG,PGraduation,PGDiscipline,PGCollege,CGPAPG,YOPPG,Source,Referredthrough,Applied,Adate,countrycode,Id_proof,ID_NO,iddata,facedata,new_id,current_date])
             # return render(request, 'registration/login.html')
-            return redirect('registersucess')
+            return redirect('registersuccess')
 
 
         finally:
@@ -247,8 +247,8 @@ def registration(request):
     context = {'countries': countries,'ug':ug,'pg':pg,'branch':branch,'jobs':jobs,'years':years}
     return render(request, 'registration/registration.html',context)  
 
-def registersucess(request):
-    return render(request,'registration/registersucess.html')
+def registersuccess(request):
+    return render(request,'registration/registersuccess.html')
 
 @csrf_exempt
 def capture_card(request):
@@ -1130,7 +1130,7 @@ def exam_main_dashboard(request):
             elif (candidate_data[57] == 1 and (candidate_data[38] == 0 or candidate_data[38] == 1) and candidate_data[58] == 'PASS'):
                 level = 2
             else:
-                return HttpResponse('Completed your exam any quries contact HR')
+                return redirect('alert_page_exam')
             cursor = connection.cursor()
             cursor.execute('exec [get_candidate_applied_job_details] %s,%s', [level, candidate_data[31]])
             subjects = cursor.fetchall()

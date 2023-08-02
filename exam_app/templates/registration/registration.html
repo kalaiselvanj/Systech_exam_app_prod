@@ -233,7 +233,7 @@
                             <select id="Applyingfor" name="Applyingfor" required >
                                 <option value="" disabled selected hidden>Select option</option>
                                 {% for job in jobs %}             
-                                <option value="{{job.1}}">{{ job.0 }}</option>
+                                <option value="{{job.1}}">{{ job.0}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -301,7 +301,7 @@
                                             <select name="country_code" id="country_code" required >
                                                 <option value="" disabled selected hidden>Select option</option>
                                                 {% for code, name,lable,phone_code in countries %}
-                                                <option value="+{{phone_code }}">{{name}}</option>
+                                                <option value="+{{phone_code}}">{{name}}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -338,16 +338,16 @@
                             <div class="col-md-4">
                                 <div class="radio-buttons">
                                     <label style="font-size: 14px; font-weight: 400; display: flex; align-items: center; margin-right: 10px;">
-                                        <input type="radio" name="option" value="option1">
+                                        <input type="radio" name="option5" value="option1">
                                         CGPA<span style="color:red">*</span>
                                     </label>
                                     <label style="font-size: 14px; font-weight: 400; display: flex; align-items: center; margin-right: 10px;">
-                                        <input type="radio" name="option" value="option2">
+                                        <input type="radio" name="option5" value="option2">
                                         Percentage<span style="color:red">*</span>
                                     </label>
                                 </div> 
-                                <input type="text" name="CGPA10" id="CGPA10" placeholder="Enter % (or) CGPA" size="15" maxlength="5" oninput="validateCGPA(this)" required > 
-                                
+                                <input type="text" name="CGPA10" id="CGPA10" placeholder="Enter % (or) CGPA" size="15" maxlength="5" oninput="validateCGPA_10(this)" required > 
+                                <span class="validation-message"></span>
                             </div>
                             <div class="col-md-4" >
                                 <label class="input-label" for="YOP10"> Year of passing<span style="color:red">*</span>
@@ -372,15 +372,15 @@
                             <div class="col-md-3">
                                 <div class="radio-buttons">
                                     <label style="font-size: 14px; font-weight: 400; display: flex; align-items: center; margin-right: 10px;">
-                                        <input type="radio" name="option" value="option1">
+                                        <input type="radio" name="option2" value="option1">
                                         CGPA<span style="color:red">*</span>
                                     </label>
                                     <label style="font-size: 14px; font-weight: 400; display: flex; align-items: center; margin-right: 10px;">
-                                        <input type="radio" name="option" value="option2">
+                                        <input type="radio" name="option2" value="option2">
                                         Percentage<span style="color:red">*</span>
                                     </label>
                                 </div>  
-                                <input type="text" name="CGPA12" id="CGPA12" placeholder="Enter % (or) CGPA" size="15" maxlength="5" oninput="validateCGPA(this)" required  > 
+                                <input type="text" name="CGPA12" id="CGPA12" placeholder="Enter % (or) CGPA" size="15" maxlength="5" oninput="validateCGPA_12(this)" required  > 
                                 <span class="validation-message"></span>
                             </div>
                             <div class="col-md-3"> 
@@ -433,15 +433,15 @@
                             <div  class="col-md-row-5"> 
                                 <div class="radio-buttons">
                                     <label style="font-size: 14px; font-weight: 400; display: flex; align-items: center; margin-right: 10px;">
-                                        <input type="radio" name="option" value="option1">
+                                        <input type="radio" name="option3" value="option1">
                                         CGPA<span style="color:red">*</span>
                                     </label>
                                     <label style="font-size: 14px; font-weight: 400; display: flex; align-items: center; margin-right: 10px;">
-                                        <input type="radio" name="option" value="option2">
+                                        <input type="radio" name="option3" value="option2">
                                         Percentage<span style="color:red">*</span>
                                     </label>
                                 </div>  
-                                <input type="text" name="CGPAUG" id="CGPAUG" placeholder="Enter % (or) CGPA" size="15" maxlength="5" oninput="validateCGPA(this)" required  >
+                                <input type="text" name="CGPAUG" id="CGPAUG" placeholder="Enter % (or) CGPA" size="15" maxlength="5" oninput="validateCGPA_UG(this)" required  >
                                 <span class="validation-message"></span>
                             </div>
                             <div  class="col-md-row-5"> 
@@ -490,15 +490,15 @@
                             <div class="col-md-row-5">
                                 <div class="radio-buttons">
                                     <label style="font-size: 14px; font-weight: 400; display: flex; align-items: center; margin-right: 10px;">
-                                        <input type="radio" name="option" value="option1">
+                                        <input type="radio" name="option4" value="option1">
                                         CGPA<span style="color:red">*</span>
                                     </label>
                                     <label style="font-size: 14px; font-weight: 400; display: flex; align-items: center; margin-right: 10px;">
-                                        <input type="radio" name="option" value="option2">
+                                        <input type="radio" name="option4" value="option2">
                                         Percentage<span style="color:red">*</span>
                                     </label>
                                 </div>
-                                <input type="text" name="CGPAPG" id="CGPAPG" placeholder="Enter % (or) CGPA" size="15" maxlength="5" oninput="validateCGPA(this)">
+                                <input type="text" name="CGPAPG" id="CGPAPG" placeholder="Enter % (or) CGPA" size="15" maxlength="5" oninput="validateCGPA_PG(this)">
                                 <span class="validation-message"></span>
                             </div>
                             <div  class="col-md-row-5"> 
@@ -913,11 +913,35 @@ submitButton.addEventListener('click', function(event) {
 }
     
     
-    function validateCGPA(input) {
+    function validateCGPA_10(input) {
         const inputValue = parseFloat(input.value);
-        const isCGPASelected = document.querySelector('input[name="option"][value="option1"]').checked;
+        const radioGroupName = "option5"; // Set the name of the radio button group to "option4"
+        const isCGPASelected = document.querySelector(`input[name="${radioGroupName}"][value="option1"]`).checked;
         var messageSpan = input.nextElementSibling;
-
+    
+        if (isCGPASelected) {
+            if (isNaN(inputValue) || inputValue < 1 || inputValue > 10) {
+                messageSpan.textContent ="CGPA must be a number between 1 and 10";
+            } else {
+                // Clear the validation message if it was previously set
+                messageSpan.textContent = "";
+            }
+        } else {
+            // Handle Percentage validation
+            if (isNaN(inputValue) || inputValue < 35 || inputValue > 100) {
+                messageSpan.textContent = "Percentage must be a number between 35 and 100";
+            } else {
+                messageSpan.textContent = "";
+            }
+        }
+    }
+    
+    function validateCGPA_12(input) {
+        const inputValue = parseFloat(input.value);
+        const radioGroupName = "option2"; // Set the name of the radio button group to "option4"
+        const isCGPASelected = document.querySelector(`input[name="${radioGroupName}"][value="option1"]`).checked;
+        var messageSpan = input.nextElementSibling;
+    
         if (isCGPASelected) {
             if (isNaN(inputValue) || inputValue < 1 || inputValue > 10) {
                 messageSpan.textContent ="CGPA must be a number between 1 and 10";
@@ -935,20 +959,53 @@ submitButton.addEventListener('click', function(event) {
         }
     }
 
-    function showValidationMessage(message) {
-        const validationMessage = document.querySelector('.validation-message');
-        validationMessage.textContent = message;
-        validationMessage.style.display = 'inline';
+    function validateCGPA_UG(input) {
+        const inputValue = parseFloat(input.value);
+        const radioGroupName = "option3"; // Set the name of the radio button group to "option4"
+        const isCGPASelected = document.querySelector(`input[name="${radioGroupName}"][value="option1"]`).checked;
+        var messageSpan = input.nextElementSibling;
+    
+        if (isCGPASelected) {
+            if (isNaN(inputValue) || inputValue < 1 || inputValue > 10) {
+                messageSpan.textContent ="CGPA must be a number between 1 and 10";
+            } else {
+                // Clear the validation message if it was previously set
+                messageSpan.textContent = "";
+            }
+        } else {
+            // Handle Percentage validation
+            if (isNaN(inputValue) || inputValue < 35 || inputValue > 100) {
+                messageSpan.textContent = "Percentage must be a number between 35 and 100";
+            } else {
+                messageSpan.textContent = "";
+            }
+        }
     }
 
-    function hideValidationMessage() {
-        const validationMessage = document.querySelector('.validation-message');
-        validationMessage.textContent = '';
-        validationMessage.style.display = 'none';
+    function validateCGPA_PG(input) {
+        const inputValue = parseFloat(input.value);
+        const radioGroupName = "option4"; // Set the name of the radio button group to "option4"
+        const isCGPASelected = document.querySelector(`input[name="${radioGroupName}"][value="option1"]`).checked;
+        var messageSpan = input.nextElementSibling;
+    
+        if (isCGPASelected) {
+            if (isNaN(inputValue) || inputValue < 1 || inputValue > 10) {
+                messageSpan.textContent ="CGPA must be a number between 1 and 10";
+            } else {
+                // Clear the validation message if it was previously set
+                messageSpan.textContent = "";
+            }
+        } else {
+            // Handle Percentage validation
+            if (isNaN(inputValue) || inputValue < 35 || inputValue > 100) {
+                messageSpan.textContent = "Percentage must be a number between 35 and 100";
+            } else {
+                messageSpan.textContent = "";
+            }
+        }
     }
     
     
-
         
 
 </script>
