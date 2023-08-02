@@ -912,50 +912,56 @@ submitButton.addEventListener('click', function(event) {
     }
 }
     
-    
-    function validateCGPA_10(input) {
-        const inputValue = parseFloat(input.value);
-        const radioGroupName = "option5"; // Set the name of the radio button group to "option4"
-        const isCGPASelected = document.querySelector(`input[name="${radioGroupName}"][value="option1"]`).checked;
-        var messageSpan = input.nextElementSibling;
-    
-        if (isCGPASelected) {
-            if (isNaN(inputValue) || inputValue < 1 || inputValue > 10) {
-                messageSpan.textContent ="CGPA must be a number between 1 and 10";
-            } else {
-                // Clear the validation message if it was previously set
-                messageSpan.textContent = "";
-            }
+function validateCGPA_10(input) {
+    const inputValue = parseFloat(input.value);
+    const radioGroupName = "option5";
+    const isCGPASelected = document.querySelector(`input[name="${radioGroupName}"][value="option1"]`).checked;
+    const isPercentageSelected = document.querySelector(`input[name="${radioGroupName}"][value="option2"]`).checked;
+    var messageSpan = input.nextElementSibling;
+
+    if (isCGPASelected) {
+        if (isNaN(inputValue) || inputValue < 1 || inputValue > 10) {
+            messageSpan.textContent = "CGPA must be a number between 1 and 10";
         } else {
-            // Handle Percentage validation
-            if (isNaN(inputValue) || inputValue < 35 || inputValue > 100) {
-                messageSpan.textContent = "Percentage must be a number between 35 and 100";
-            } else {
-                messageSpan.textContent = "";
-            }
+            // Clear the validation message if it was previously set
+            messageSpan.textContent = "";
         }
+    } else if (isPercentageSelected) {
+        // Handle Percentage validation
+        if (isNaN(inputValue) || inputValue < 35 || inputValue > 100) {
+            messageSpan.textContent = "Percentage must be a number between 35 and 100";
+        } else {
+            messageSpan.textContent = "";
+        }
+    } else {
+        messageSpan.textContent = "Select any one of the radio buttons given above";
     }
+}
+
     
     function validateCGPA_12(input) {
         const inputValue = parseFloat(input.value);
         const radioGroupName = "option2"; // Set the name of the radio button group to "option4"
         const isCGPASelected = document.querySelector(`input[name="${radioGroupName}"][value="option1"]`).checked;
+        const isPercentageSelected = document.querySelector(`input[name="${radioGroupName}"][value="option2"]`).checked;
         var messageSpan = input.nextElementSibling;
     
         if (isCGPASelected) {
             if (isNaN(inputValue) || inputValue < 1 || inputValue > 10) {
-                messageSpan.textContent ="CGPA must be a number between 1 and 10";
+                messageSpan.textContent = "CGPA must be a number between 1 and 10";
             } else {
                 // Clear the validation message if it was previously set
                 messageSpan.textContent = "";
             }
-        } else {
+        } else if (isPercentageSelected) {
             // Handle Percentage validation
             if (isNaN(inputValue) || inputValue < 35 || inputValue > 100) {
                 messageSpan.textContent = "Percentage must be a number between 35 and 100";
             } else {
                 messageSpan.textContent = "";
             }
+        } else {
+            messageSpan.textContent = "Select any one of the radio buttons given above";
         }
     }
 
@@ -963,22 +969,25 @@ submitButton.addEventListener('click', function(event) {
         const inputValue = parseFloat(input.value);
         const radioGroupName = "option3"; // Set the name of the radio button group to "option4"
         const isCGPASelected = document.querySelector(`input[name="${radioGroupName}"][value="option1"]`).checked;
+        const isPercentageSelected = document.querySelector(`input[name="${radioGroupName}"][value="option2"]`).checked;
         var messageSpan = input.nextElementSibling;
     
         if (isCGPASelected) {
             if (isNaN(inputValue) || inputValue < 1 || inputValue > 10) {
-                messageSpan.textContent ="CGPA must be a number between 1 and 10";
+                messageSpan.textContent = "CGPA must be a number between 1 and 10";
             } else {
                 // Clear the validation message if it was previously set
                 messageSpan.textContent = "";
             }
-        } else {
+        } else if (isPercentageSelected) {
             // Handle Percentage validation
             if (isNaN(inputValue) || inputValue < 35 || inputValue > 100) {
                 messageSpan.textContent = "Percentage must be a number between 35 and 100";
             } else {
                 messageSpan.textContent = "";
             }
+        } else {
+            messageSpan.textContent = "Select any one of the radio buttons given above";
         }
     }
 
@@ -986,22 +995,25 @@ submitButton.addEventListener('click', function(event) {
         const inputValue = parseFloat(input.value);
         const radioGroupName = "option4"; // Set the name of the radio button group to "option4"
         const isCGPASelected = document.querySelector(`input[name="${radioGroupName}"][value="option1"]`).checked;
+        const isPercentageSelected = document.querySelector(`input[name="${radioGroupName}"][value="option2"]`).checked;
         var messageSpan = input.nextElementSibling;
     
         if (isCGPASelected) {
             if (isNaN(inputValue) || inputValue < 1 || inputValue > 10) {
-                messageSpan.textContent ="CGPA must be a number between 1 and 10";
+                messageSpan.textContent = "CGPA must be a number between 1 and 10";
             } else {
                 // Clear the validation message if it was previously set
                 messageSpan.textContent = "";
             }
-        } else {
+        } else if (isPercentageSelected) {
             // Handle Percentage validation
             if (isNaN(inputValue) || inputValue < 35 || inputValue > 100) {
                 messageSpan.textContent = "Percentage must be a number between 35 and 100";
             } else {
                 messageSpan.textContent = "";
             }
+        } else {
+            messageSpan.textContent = "Select any one of the radio buttons given above";
         }
     }
     

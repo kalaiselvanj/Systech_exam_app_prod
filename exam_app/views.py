@@ -34,7 +34,18 @@ from django.core.files.base import ContentFile
 import json
 from datetime import datetime as dt,timedelta
 from datetime import date
+from django.core.mail import send_mail
+
 # Create your views here.
+
+def send_email_view(request):
+    subject = 'Test Email-2 from Django'
+    message = 'This is a test email sent from Django. your id is 20230802001'
+    from_email = 'kalaiselvanj@systechusa.com'  # Replace with your Gmail address
+    recipient_list = ['santoshy@systechusa.com','cimplysantosh@gmail.com']  # Replace with recipient email addresses
+
+    send_mail(subject, message, from_email, recipient_list)
+    return HttpResponse("mail sent successfully")
 
 
 
@@ -228,6 +239,11 @@ def registration(request):
             cursor = connection.cursor()
             cursor.execute('exec insertregistrationdata %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s' ,[Applyingfor,firstname,lastname,gender,dob,MaritalStatus,phone,email,CAddress,PAddress,Institution10,CGPA10,YOP10,Institution12,CGPA12,YOP12,Branch12,Graduation,UGCollege,UGDiscipline,CGPAUG,YOPUG,PGraduation,PGDiscipline,PGCollege,CGPAPG,YOPPG,Source,Referredthrough,Applied,Adate,countrycode,Id_proof,ID_NO,iddata,facedata,new_id,current_date])
             # return render(request, 'registration/login.html')
+            subject = 'Mail for User-credentials'
+            message = 'Hi '+firstname+', Your Username is '+new_id+' and password is '+phone+', our HR Team will let you know when will exam starts. All the best for your exam!'
+            from_email = 'kalaiselvanj@systechusa.com'  # Replace with your Gmail address
+            recipient_list = [email]  # Replace with recipient email addresses
+            send_mail(subject, message, from_email, recipient_list)
             return redirect('registersuccess')
 
 
