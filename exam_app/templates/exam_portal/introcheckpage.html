@@ -175,10 +175,10 @@
 
     // Microphone check
     const startMicrophoneCheckButton = document.getElementById('start-microphone-check');
-    const stopMicrophoneCheckButton = document.getElementById('stop-microphone-check');
+    {% comment %} const stopMicrophoneCheckButton = document.getElementById('stop-microphone-check'); {% endcomment %}
 
     startMicrophoneCheckButton.addEventListener('click', startMicrophoneCheck);
-    stopMicrophoneCheckButton.addEventListener('click', stopMicrophoneCheck);
+    {% comment %} stopMicrophoneCheckButton.addEventListener('click', stopMicrophoneCheck); {% endcomment %}
 
     function startMicrophoneCheck() {
       navigator.mediaDevices
@@ -199,7 +199,7 @@
         });
     }
 
-    function stopMicrophoneCheck() {
+    {% comment %} function stopMicrophoneCheck() {
       if (microphoneStream) {
         microphoneStream.getTracks().forEach((track) => track.stop());
         microphoneStream = null;
@@ -207,7 +207,7 @@
 
         setMicrophoneStatus('Microphone check stopped', true);
       }
-    }
+    } {% endcomment %}
 
     document.getElementById("next-button").addEventListener("click", function() {
         redirectToURL();
