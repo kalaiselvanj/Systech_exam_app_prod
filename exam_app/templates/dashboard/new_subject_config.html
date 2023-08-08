@@ -201,7 +201,7 @@ h2 {
             <div class="col-md-6">
               <label for="subjects" class="form-label">Subjects</label>
               <select class="form-control w-50" id="subjects" name="subject">
-                <option selected disabled>Select a subject</option>
+                <option selected disabled>Select a Skill</option>
                 {% for subject in subjects %}
                 <option value="{{subject.0}}">{{subject.1}}</option>
                 {% endfor %}
@@ -254,7 +254,7 @@ h2 {
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
-              <label for="subject_type" class="form-label">Subject Type</label>
+              <label for="subject_type" class="form-label">Skill Type</label>
               <div class="form-check form-check-inline">
                 <input
                   class="form-check-input"
