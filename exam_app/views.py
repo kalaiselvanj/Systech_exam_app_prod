@@ -953,7 +953,10 @@ def add_quest(request):
                     cursor.execute('exec insertQuestiondata %s,%s,%s,%s,%s,%s,%s,%s',[subject_id,level_id,question,option1,option2,option3,option4,answer])
                     return redirect('/quest_bank')
                 else:
-                    return render(request, 'dashboard/add_quest.html',{'error':'This question already exists'}) 
+                    cursor = connection.cursor()
+                    cursor.execute('exec get_subjectData')
+                    subjects = cursor.fetchall()
+                    return render(request, 'dashboard/add_quest.html',{'subjects':subjects,'error':'This question already exists'}) 
             finally:
                 cursor.close()
 
