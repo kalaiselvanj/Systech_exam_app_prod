@@ -106,14 +106,14 @@ def login(request):
 
             if user:
                 if user[3] == password and user[4] == True:
-                    user_name = user[5]
+                    user_name = user[0]
                     email = user[2]
                     request.session['username'] = user_name
                     request.session['email'] = email                  
                     request.session['user_authenticated'] = True                    
                     return redirect('dashboard')
                 elif user[3] == password and user[4] == False:
-                    user_name = user[5]
+                    user_name = user[0]
                     email = user[2]
                     request.session['username'] = user_name  
                     request.session['email'] = email                    
@@ -1123,9 +1123,9 @@ def resultsdetail(request,id,level):
 
 def exam_main_dashboard(request):
     if request.session.get('user_authenticated'):
-        email = request.session['email']
+        id = request.session['username']
         cursor = connection.cursor()
-        cursor.execute('EXEC check_valid_email @email=%s', [email])
+        cursor.execute('EXEC check_valid_id %s', [id])
         user = cursor.fetchone()
         print(user)
         # ip_address = socket.gethostbyname(socket.gethostname())

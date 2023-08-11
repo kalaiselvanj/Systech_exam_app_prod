@@ -300,7 +300,7 @@
                               </div> -->
                               <div class="mb-3 d-flex flex-column align-items-center">
                                 <label for="job_Position" class="form-label">Job Position</label>
-                                <select class="form-control" id="job_Position" name="job_Position" disabled>
+                                <select class="form-control" id="job_Position" name="job_Position">
                                     <option value="{{skill.7}}" selected>{{skill.1}}</option>
                                     {% for job in jobs %}
                                     <option value="{{job.0}}">{{job.1}}</option>
@@ -309,7 +309,7 @@
                             </div>
                                   <div class="mb-3 d-flex flex-column align-items-center">       
                                       <label for="subjects" class="form-label">Skill</label> 
-                                  <select class="form-control" id="subjects" name="subjects" disabled> 
+                                  <select class="form-control" id="subjects" name="subjects"> 
                                             <option value="{{skill.8}}" selected >{{skill.2}}</option> 
                                                   {% for subject in subjects %}        
                                                   <option value="{{subject.0}}">{{subject.1}}</option>    
@@ -318,7 +318,7 @@
                                                     </div>
                           <div class="mb-3 d-flex flex-column align-items-center">
                                 <label for="level" class="form-label">level</label>
-                                <input type="text" class="form-control" id="level" name="level" value="{{skill.3}}" disabled>
+                                <input type="text" class="form-control" id="level" name="level" value="{{skill.3}}">
                               </div>
                               <div class="mb-3 d-flex flex-column align-items-center">
                                 <label for="noofquestions" class="form-label">No.Of Questions</label>
