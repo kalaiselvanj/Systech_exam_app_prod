@@ -1255,6 +1255,7 @@ def exam_portal(request):
                 # cursor.execute('exec getExamQuestion %s,%s', [jobPosition,level])
                 # my_list = cursor.fetchall()
                 # print(my_list)
+                cursor.execute('exec remove_dup_results %s,%s',[user_id,level])
                 my_list = final_quest_list
                 appliedfor = my_list[0][9]
                 for tup in my_list:
