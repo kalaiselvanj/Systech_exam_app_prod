@@ -881,10 +881,16 @@ def create_Skill(request):
 
             try:
                 cursor = connection.cursor()
+                cursor.execute("exec calc_no_of_questions_db %s,%s",[Subject_ID,Level])
+                no_of_questions_in_db = cursor.fetchone()
+                no_of_questions_in_db = no_of_questions_in_db[0]
+                # print(no_of_questions_in_db)
                 cursor.execute("exec get_skill_present_or_not %s,%s,%s",[Subject_ID,AppliedFor,Level])
                 skill_presnet = cursor.fetchall()
                 if len(skill_presnet) == 1:
                     return render(request, 'dashboard/new_subject_config.html',{'jobs':jobs,'subjects':subjects,'error': 'This Skill Set already exists'})
+                elif (int(no_of_questions_in_db) < int(No_of_Question)):
+                    return render(request, 'dashboard/new_subject_config.html',{'jobs':jobs,'subjects':subjects,'error': 'The number Questions in the Database for this skillset is lesser than your input No_of_Questions'})
                 else:
                     cursor.execute('exec insertSubjectlevel %s,%s,%s,%s,%s,%s,%s,%s',[AppliedFor,Subject_ID,Level,No_of_Question,CutOffMarks,Duration,IsMandatory,OptionalGroupName])
                     return redirect('/skill_set_config') 
