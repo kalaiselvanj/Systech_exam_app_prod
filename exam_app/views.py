@@ -950,12 +950,11 @@ def add_quest(request):
             option4 =  request.POST.get('option4')
             answer =  request.POST.get('answer')
             try:
-                
                 cursor = connection.cursor()
                 cursor.execute('exec check_duplicate_quest %s',[question])
                 question_dup = cursor.fetchall()
                 print(question_dup)
-                if question_dup is None:
+                if question_dup == []:
                     cursor.execute('exec insertQuestiondata %s,%s,%s,%s,%s,%s,%s,%s',[subject_id,level_id,question,option1,option2,option3,option4,answer])
                     return redirect('/quest_bank')
                 else:
