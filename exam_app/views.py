@@ -96,6 +96,10 @@ from django.core.mail import send_mail
 #     return render(request, 'registration/login.html')
 
 def login(request):
+    if request.session['user_authenticated'] == True:
+        request.session.flush()
+        request.session['user_authenticated'] = False
+        return redirect('login')
     if request.method == 'POST':
         login = request.POST['username']
         password = request.POST['password']
