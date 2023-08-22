@@ -96,10 +96,10 @@ from django.core.mail import send_mail
 #     return render(request, 'registration/login.html')
 
 def login(request):
-    if request.session['user_authenticated'] == True:
-        request.session.flush()
-        request.session['user_authenticated'] = False
-        return redirect('login')
+    # if request.session['user_authenticated'] == True:
+    #     request.session.flush()
+    #     request.session['user_authenticated'] = False
+    #     return redirect('login')
     if request.method == 'POST':
         login = request.POST['username']
         password = request.POST['password']
@@ -1110,7 +1110,7 @@ def resultsdetail(request,id,level):
         # Convert the transformed data dictionary into a list of values
         final_data = list(transformed_data.values())
         print(final_data)
-        connection_string = "DefaultEndpointsProtocol=https;AccountName=systechstorage;AccountKey=XAc6NuwgzYj80yUSn29KeofUHMWwUU09DGp18Fb9ZMMt6aD0i68X1EYxq3QhHnH/T5my81gbrY9C+ASt5XTySg==;EndpointSuffix=core.windows.net"
+        connection_string = "DefaultEndpointsProtocol=https;AccountName=systechstorageaccount;AccountKey=CWR/rOf2VS9a86WHYw1nh51obWUV2ICC8p1ftDQOFGvG5fhLAsl2JotTrDd5Hp1wHM9H4YWosvP2+ASt/KbrHA==;EndpointSuffix=core.windows.net"
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
         container_name = str(id)
         container_client = blob_service_client.get_container_client(container_name)
@@ -1329,7 +1329,7 @@ def detect_face(request):
             image = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
             # Provide your Azure Storage connection string and container name
-            connection_string = "DefaultEndpointsProtocol=https;AccountName=systechstorage;AccountKey=XAc6NuwgzYj80yUSn29KeofUHMWwUU09DGp18Fb9ZMMt6aD0i68X1EYxq3QhHnH/T5my81gbrY9C+ASt5XTySg==;EndpointSuffix=core.windows.net"
+            connection_string = "DefaultEndpointsProtocol=https;AccountName=systechstorageaccount;AccountKey=CWR/rOf2VS9a86WHYw1nh51obWUV2ICC8p1ftDQOFGvG5fhLAsl2JotTrDd5Hp1wHM9H4YWosvP2+ASt/KbrHA==;EndpointSuffix=core.windows.net"
             container_name = user_id
 
             # Call the function to create or get the blob container
