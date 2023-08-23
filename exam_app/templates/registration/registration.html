@@ -297,7 +297,7 @@
                                 <div class="head " >
                                     <div class="head2 col-md-4"   >
                                         <div class="country-code-ctr" >
-                                            <label class="input-label" for="country_code">Country code<span style="color:red">*</span></label>
+                                            <label class="input-label" for="country_code">Country Code<span style="color:red">*</span></label>
                                             <select name="country_code" id="country_code" required >
                                                 <option value="" disabled selected hidden>Select option</option>
                                                 {% for code, name,lable,phone_code in countries %}
@@ -306,7 +306,7 @@
                                             </select>
                                         </div>
                                         <div class="phone-number-ctr " >
-                                            <label class="input-label" for="phone">Phone number<span style="color:red">*</span></label>
+                                            <label class="input-label" for="phone">Phone Number<span style="color:red">*</span></label>
                                             <input type="tel" id="phone" name="phone" maxlength="10" placeholder="Enter phone number" pattern = "[0-9]{10}"  title="Please enter a valid phone number (eg.1234567890)" required >
                                             <span class="error-msg"></span>
                                         </div>
@@ -350,7 +350,7 @@
                                 <span class="validation-message"></span>
                             </div>
                             <div class="col-md-4" >
-                                <label class="input-label" for="YOP10"> Year of passing<span style="color:red">*</span>
+                                <label class="input-label" for="YOP10"> Year of Passing<span style="color:red">*</span>
                                 </label>    
                                 <select name="YOP10"  id="YOP10" placeholder="Enter YOP"  required>
                                     <option value="" disabled selected hidden>Select option</option>
@@ -384,7 +384,7 @@
                                 <span class="validation-message"></span>
                             </div>
                             <div class="col-md-3"> 
-                                <label class="input-label" for="YOP12"> Year of passing<span style="color:red">*</span>
+                                <label class="input-label" for="YOP12"> Year of Passing<span style="color:red">*</span>
                                 </label>    
                                 <select name="YOP12"  id="YOP12" placeholder="Enter YOP" onchange="validateForm(event)" required>
                                     <option value="" disabled selected hidden>Select option</option>
@@ -445,7 +445,7 @@
                                 <span class="validation-message"></span>
                             </div>
                             <div  class="col-md-row-5"> 
-                                <label class="input-label" for="YOPUG"> Year of passing<span style="color:red">*</span>
+                                <label class="input-label" for="YOPUG"> Year of Passing<span style="color:red">*</span>
                                 </label>    
                                 <select name="YOPUG"  id="YOPUG" placeholder="Enter YOP" onchange="validateForm_2(event)" required>
                                     <option value="" disabled selected hidden>Select option</option>
@@ -502,7 +502,7 @@
                                 <span class="validation-message"></span>
                             </div>
                             <div  class="col-md-row-5"> 
-                                <label class="input-label" for="YOPPG"> Year of passing 
+                                <label class="input-label" for="YOPPG"> Year of Passing 
                                 </label>    
                                 <select name="YOPPG"  id="YOPPG" placeholder="Enter YOP" onchange="validateForm_3(event)" >
                                     <option value="" disabled selected hidden>Select option</option>
@@ -531,7 +531,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <label class="input-label mt-0" id="referredThroughLabel"> Referred through<span class="required-asterisk" style="color:red">*</span>
+                                <label class="input-label mt-0" id="referredThroughLabel"> Referred Through<span class="required-asterisk" style="color:red">*</span>
                                 </label>   
                                 <input type="text" name="Referredthrough" id="Referredthrough" placeholder="Name (or) Emp-Id" maxlength="200" required> 
                             </div>
@@ -555,7 +555,7 @@
                               </div>
                         </div>
                     </div>
-                    <div class="sub-heading">ID_Proof_Details</div>
+                    <div class="sub-heading">ID Proof Details</div>
                     <div class="container" >
                         <div class="head2">
                            
@@ -564,7 +564,7 @@
                                     <label for="cardImageDataField">
                                       <span style="color:red">*</span>
                                     </label>
-                                    <a href="{% url 'capture_card' %}" class="button">id proof</a>
+                                    <a href="{% url 'capture_card' %}" class="button">ID Proof</a>
                                     <img id="cardImage" src="#" name="iddata" value={{CardimageData}} alt="" style="width:100px; height:100px; margin-top:15px;">
                                     <input type="hidden" name="card_image_data" id="cardImageDataField" required>
                                   </div>
@@ -581,7 +581,7 @@
                             
                             </div>
                             <div class="heading  col-md-4">
-                                <label class="input-label" for="Id_proof">Type Of Id_proof<span style="color:red">*</span></label>
+                                <label class="input-label" for="Id_proof">Type of ID Proof<span style="color:red">*</span></label>
                                 <select name="Id_proof"  id="Id_proof" required>
                                     <option value="" disabled selected hidden>Select option</option>
                                     <option value="PAN CARD">PAN CARD</option> 
@@ -591,7 +591,7 @@
                                 </select>
                             </div>
                             <div class="heading col-md-4" >
-                                <label class="input-label" for="ID_NO" id="idNoLabel">ID_NO<span style="color:red">*</span></label>
+                                <label class="input-label" for="ID_NO" id="idNoLabel">ID NO<span style="color:red">*</span></label>
                                 <input type="text" name="ID_NO" id="ID_NO" size="15" placeholder="Enter ID_NO"  pattern=""  required />
                                 <span class="error-message" id="idNoErrorMessage"></span>
                             </div>

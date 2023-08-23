@@ -90,14 +90,14 @@ DATABASES = {
         'NAME': 'OLT_DEV',
 
         # String. Database user name in "user" format. If not given then MS Integrated Security will be used.
-        'USER': 'Shrija',
+        'USER': 'Bharath',
 
         # String. Database user password.
-        'PASSWORD': 'systech@123',
+        'PASSWORD': 'Systech123',
         
 
          # String. SQL Server instance in "server\instance" format.
-        'HOST': 'systech-exam-app.database.windows.net',
+        'HOST': 'systech-exam-app-prod-1.database.windows.net',
 
         # String. Server instance port. An empty string means the default port.
         'PORT': '1433',
