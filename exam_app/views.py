@@ -101,10 +101,10 @@ def login(request):
     #     request.session['user_authenticated'] = False
     #     return redirect('login')
     if request.method == 'POST':
+        cursor = connection.cursor()
         login = request.POST['username']
         password = request.POST['password']
         try:
-            cursor = connection.cursor()
             cursor.execute('EXEC check_valid_id %s', [login])
             user = cursor.fetchone()
 
@@ -1228,6 +1228,7 @@ def submit_answers(request):
 def introcheckpage(request):
     return render(request,'exam_portal/introcheckpage.html')
 
+
 def exam_portal(request):
     global is_recording
     if request.session.get('user_authenticated'):
@@ -1364,8 +1365,11 @@ def detect_face(request):
     return JsonResponse({'status': 'error'})
 
 
+a = {'RDBMS': {'What is a relation in RDBMS?': ['Key', 'Table', 'Row', 'Data Types', 8, 2, 'Table', '2'], 'Which of the following is the full form of RDBMS?': ['Relational Data Management System', 'Relational Database Management System', ' Relative Database Management System', ' Regional Data Management System', 6, 2, 'Relational Database Management System', '2'], 'What is an RDBMS?': ['Database that stores data elements that are not linked.', 'Database that accesses data elements that are not linked.', 'Database that stores and allows access to data elements that are linked.', 'None of the mentioned', 7, 2, 'Database that stores and allows access to data elements that are linked.', '2'], 'Which of the following systems use RDMS?': ['Oracle.', ' Microsoft SQLServer.', 'IBM.', 'All of the mentioned.', 9, 2, 'All of the mentioned.', '2'], 'Which of the following constraints RDBS doesn’t check before creating the tables?': ['Not null.', 'Primary Keys.', 'data Structure', 'Data Integrity', 10, 2, 'data Structure', '2']}, 'python': {' Which of the following is the correct extension of the Python file?': ['python', '.pl', '.py', '.p', 19, 3, '.py', '2'], 'Who developed Python Programming Language?': ['Wick van Rossum', 'Vankata Rama Rao', 'Santosh Yenugula', 'Guido van Rossum', 16, 3, 'Guido van Rossum', '2'], 'All keywords in Python are in _________': ['Capitalized', 'Lower Case', 'UPPER CASE', 'None of the Mentioned', 20, 3, 'None of the Mentioned', '2']}}
+
+
 def camera_part(request):
-    return render(request, 'exam_portal/camera_part.html')
+    return render(request, 'exam_portal/camera_part.html', {'questions':a})
 
 
 

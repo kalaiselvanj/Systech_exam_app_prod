@@ -51,6 +51,10 @@
     font-weight: bold;
     height: 55vh;
 }
+.tablinks.active {
+  background-color: #007bff; /* Change this to the color you want */
+  color: #fff; /* Change this to the text color you want */
+}
 
 </style>
 {% block body %}
@@ -60,16 +64,15 @@
     <div class="container" id="b1">
       <div class="tab">
         {% for key,value in questions.items %}
-        <button class="tablinks" onclick="openTab(event, '{{key}}')" {% if forloop.first %}id="defaultOpen"{% endif %}>{{key}}</button>
+        <button class="tablinks" onclick="openTab(event, '{{key}}', 1)" {% if forloop.first %}id="defaultOpen"{% endif %}>{{key}}</button>
         {% endfor %}
         <button id="timer"></button>
-        <!-- <div id="timer"></div> -->
-    </div>
-    
+      </div>
+      
     
     {% for key,value in questions.items %}
     <div id="{{key}}" class="tabcontent">
-        <h3>{{key}}</h3>
+      <h3 id="question-heading-{{key}}">{{key}}</h3>
         <div class="card" style="height:400px" id="ques_card">
             {% for i,j in value.items %}
             <div class="card-body" id="card-body-{{ forloop.counter }}">
@@ -127,10 +130,10 @@
         </li>
         <li>No one else can be in the room with you</li>
         <li>No talking</li>
-        <li>
+        {% comment %} <li>
           The testing room must be well-lit and you must be clearly visible
-        </li>
-        <li>No dual screens/monitors</li>
+        </li> {% endcomment %}
+        {% comment %} <li>No dual screens/monitors</li> {% endcomment %}
         <li>Do not leave the camera</li>
         <li>No use of additional applications or internet</li>
       </ul>
@@ -146,20 +149,38 @@
 {% endblock %} 
 {% block scripts %}
 {% comment %} <script type="text/javascript" src="{% static 'js/app.js' %}"></script> {% endcomment %}
-<script type="text/javascript">
+<!-- Your HTML code remains the same -->
 
+<script type="text/javascript">
+  function preventBack(){window.history.forward()};
+  setTimeout("preventBack()",0);
+    window.onunload = function(){null;}
+</script>
+
+<script>
   function openTab(evt, tabName, questionIndex) {
     var i, tabcontent, tablinks;
+    var questionHeading = document.getElementById("question-heading-" + tabName);
+    var key = questionHeading.textContent;
+  
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
       tabcontent[i].style.display = "none";
     }
+  
     tablinks = document.getElementsByClassName("tablinks");
     for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
+      if (tablinks[i].textContent === key) {
+        // Add the 'active' class for the matching tablink
+        tablinks[i].classList.add("active");
+      } else {
+        // Remove the 'active' class for other tablinks
+        tablinks[i].classList.remove("active");
+      }
     }
+  
     document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
+    evt.currentTarget.classList.add("active");
     
     if (questionIndex === undefined) {
       questionIndex = 1;
@@ -210,6 +231,9 @@
     openTab(evt, tabName, nextQuestionIndex);
   });
 </script>
+
+
+
 <!-- <script>
   //countdown timer
 var countdownEl = document.getElementById('countdown');
