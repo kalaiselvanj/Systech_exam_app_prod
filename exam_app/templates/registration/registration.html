@@ -171,6 +171,33 @@
             padding: 5px !important;
             max-width: 25% !important;
             }
+            .container2 {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 20px;
+            }
+            #reg_sub,
+            #back_button {
+                width: 100px;
+                height: 20px;
+                border-radius: 10px;
+                color: white;
+                font-weight: bold;
+                border: none;
+                text-shadow: 1px 1px 1px #333;
+            }
+
+            #reg_sub {
+                background-color: blue;
+            }
+ 
+            #back_button {
+                width: 100px;
+                height: 40px;
+                border-radius: 20px;
+                background-color: green;
+            }
             .col-md-row-5 {
             
             flex: 0 0 20% !important;
@@ -598,9 +625,9 @@
                               
                         </div>
                     </div>
-                    <div class="container2" style="text-align: center;margin-top: 20px">
-                        <button type="submit" id="reg_sub" style="background-color: blue; width: 100px; height: 20px; border-radius: 10px; color: white; font-weight: bold; border: none; text-shadow: 1px 1px 1px #333;;">Submit</button>
-                        </button>
+                    <div class="container2">
+                        <button id="back_button" class="btn btn-secondary" onclick="navigateToAnotherPage()">Back</button>
+                        <button type="submit" id="reg_sub">Submit</button>
                     </div>
                 </div>
             </div>
@@ -1019,6 +1046,15 @@ function validateCGPA_10(input) {
             messageSpan.textContent = "Select any one of the radio buttons given above";
         }
     }
+
+
+    var loginUrl = "{% url 'login' %}";
+
+        function navigateToAnotherPage() {
+
+            window.location.href = loginUrl;
+
+        }
     
     
         

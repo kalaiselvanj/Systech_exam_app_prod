@@ -22,7 +22,7 @@ import wave
 import datetime
 from django.core.paginator import Paginator
 # import dlib
-# import socket
+import re
 import os
 import io
 import xlsxwriter
@@ -744,15 +744,18 @@ def subject(request):
 def new_subject(request):
     if request.session.get('user_authenticated'):
         if request.method == "POST":
-            subject = request.POST.get('subject').strip().lower()
+            subject = request.POST.get('subject')
             try:
                 cursor = connection.cursor()
                 cursor.execute("SELECT subject FROM tb_subject")
                 subject_all = cursor.fetchall()
                 subject_list = [item[0].lower() for item in subject_all]
+                subjects = subject.strip().lower()
                 print(subject_list)
-                if subject in subject_list:
+                if subjects in subject_list:
                     return render(request, 'dashboard/new_subject.html', {'errors': 'This subject already exists'})
+                elif re.search(r'[^\w\s]', subject):
+                    return render(request, 'dashboard/new_subject.html', {'errors': 'Subject cannot contain special characters or spaces'})
                 else:
                     cursor.execute('exec insertSubject %s', [subject])
                     return redirect('/subject')
