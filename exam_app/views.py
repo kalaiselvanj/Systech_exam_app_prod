@@ -107,6 +107,7 @@ def login(request):
         try:
             cursor.execute('EXEC check_valid_id %s', [login])
             user = cursor.fetchone()
+            cursor.close()
 
             if user:
                 if user[3] == password and user[4] == True:
